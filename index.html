@@ -39,6 +39,16 @@ const panel=document.getElementById('panel'),msg=document.getElementById('msg'),
   }
 }
 
+@keyframes joiHologramGlow {
+  0%, 100% {
+    filter: brightness(0.96) saturate(1);
+  }
+  50% {
+    filter: brightness(1.08) saturate(1.12);
+  }
+}
+
 main {
-  animation: joiBackgroundFloat 6s ease-in-out infinite;
+  animation: joiBackgroundFloat 6s ease-in-out infinite,
+             joiHologramGlow 5s ease-in-out infinite;
 }</style></html>
