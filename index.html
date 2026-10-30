@@ -92,6 +92,16 @@ apply();state();clock();setInterval(clock,30000);loadVoices();if(synth)synth.add
 (() => {
   'use strict';
   const el = id => document.getElementById(id);
+  const originalNotify = notify;
+  notify = message => {
+    originalNotify(message);
+    const active = document.querySelector('dialog[open]');
+    if (!active) return;
+    let feedback = active.querySelector('.dialog-feedback');
+    if (!feedback) { feedback = document.createElement('p'); feedback.className = 'dialog-feedback'; feedback.setAttribute('role','status'); active.querySelector('.panel-head').after(feedback); }
+    feedback.textContent = message;
+  };
+  document.querySelectorAll('dialog').forEach(dialog => dialog.addEventListener('close', () => dialog.querySelector('.dialog-feedback')?.remove()));
   const key = 'joi-organizer-v1';
   const groups = { personal: 'Personal', walters: 'Walters Plumbing', pipeline: 'The Pipeline' };
   const fresh = () => ({ version: 1, tasks: [], appointments: [], notes: { personal: '', walters: '', pipeline: '' } });
