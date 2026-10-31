@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-joi-release="0.12">
+<html lang="en" data-joi-release="0.13">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -81,10 +81,14 @@ body.still .head-life{transform:none!important;transition:none!important}
 body.still .holo-sweep,body.still .holo-particle{animation:none!important;opacity:0!important}
 @media(prefers-reduced-motion:reduce){.holo-sweep,.holo-particle{animation:none!important;opacity:0!important}}
 
+
+.speech-mouth{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.speech-stop{display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(145px + env(safe-area-inset-bottom));z-index:3;max-width:calc(100% - 24px);padding:8px 12px;background:#06111ff2;border:1px solid var(--line);border-radius:16px;text-align:center;box-shadow:0 6px 30px #0008}.speech-stop small{display:block;color:var(--muted);font-size:11px;margin-bottom:6px}.speaking .speech-stop{display:block}#watch-demo{width:100%;margin-top:12px}
+@media(min-width:1001px){.speech-stop{bottom:100px}}
 </style>
 </head>
 <body>
-<main class="scene" aria-label="Joi holographic illustration"><div class="art"><div class="breathing-body" aria-hidden="true"></div><div class="head-life" aria-hidden="true"><canvas class="expression-life" width="768" height="1024"></canvas><canvas class="face-life" width="768" height="1024" aria-hidden="true"></canvas></div><div class="holo-depth" aria-hidden="true">
+<main class="scene" aria-label="Joi holographic illustration"><div class="art"><div class="breathing-body" aria-hidden="true"></div><div class="head-life" aria-hidden="true"><canvas class="expression-life" width="768" height="1024"></canvas><canvas class="face-life" width="768" height="1024" aria-hidden="true"></canvas><canvas class="speech-mouth" width="768" height="1024" aria-hidden="true"></canvas></div><div class="holo-depth" aria-hidden="true">
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 768 1024" focusable="false">
   <defs>
     <path id="projection-shape" d="M132 -24C96 20 98 96 110 155C113 177 129 191 145 206C137 265 157 319 194 352L171 386C124 388 85 367 45 376C3 380 -19 402 -23 449L-26 778C42 803 95 813 157 809L500 821C562 823 620 820 654 806L644 788C597 768 552 749 503 748C497 711 482 682 470 650C465 567 458 506 456 452C455 413 426 391 391 389L369 365C405 335 427 305 433 267C457 212 457 114 447 50L406 -24Z"/>
@@ -119,7 +123,7 @@ body.still .holo-sweep,body.still .holo-particle{animation:none!important;opacit
 </div>
 </div><div class="hologram"><div class="beam"></div></div><div class="halo"></div></main>
 <header><div class="brand"><span class="wordmark">JOI</span><small>YOUR PERSONAL COMPANION</small></div><div class="live" role="status"><span class="dot" aria-hidden="true"></span><span id="status">Standby</span></div><div class="clock"><time id="clock"></time><small id="date"></small></div></header>
-<p class="notice" id="notice" role="status" hidden></p>
+<div class="speech-stop"><small>Device voice · approximate mouth timing</small><button id="stop-avatar-speech" type="button">Stop device voice</button></div><p class="notice" id="notice" role="status" hidden></p>
 <aside class="sidebar sidebar-left" id="left-widgets" aria-label="Daily organization">
   <section class="widget"><div class="widget-head"><h2>Today &amp; next</h2><button type="button" id="add-appointment" aria-label="Add an appointment">+</button></div><p class="meta" id="today-heading"></p><ul class="agenda-list" id="agenda-list"></ul><button class="small-link quiet" id="toggle-appointments" type="button">Show past appointments</button><a class="small-link" href="https://calendar.google.com/calendar/" target="_blank" rel="noopener noreferrer">Open Google Calendar ↗</a></section>
   <section class="widget"><div class="widget-head"><h2>Quick tasks <span id="task-count"></span></h2><button type="button" id="add-task" aria-label="Add a task">+</button></div><p class="meta">This tablet · separate from Todoist</p><ul class="task-list" id="task-list"></ul><button class="small-link quiet" id="toggle-completed" type="button">Show completed</button><a class="small-link" href="https://app.todoist.com/" target="_blank" rel="noopener noreferrer">Open Todoist ↗</a></section>
@@ -136,8 +140,8 @@ body.still .holo-sweep,body.still .holo-particle{animation:none!important;opacit
 <dialog id="tools-panel" aria-labelledby="tools-title"><div class="panel-head"><h1 id="tools-title">Apps &amp; shortcuts</h1><button class="quiet close" data-close aria-label="Close apps menu">×</button></div><div class="tools-grid"><a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT ↗</a><a href="https://calendar.google.com/calendar/" target="_blank" rel="noopener noreferrer">Google Calendar ↗</a><a href="https://app.todoist.com/" target="_blank" rel="noopener noreferrer">Todoist ↗</a><a href="https://mail.google.com/" target="_blank" rel="noopener noreferrer">Gmail ↗</a><a href="https://docs.google.com/" target="_blank" rel="noopener noreferrer">Google Docs ↗</a><a href="https://drive.google.com/" target="_blank" rel="noopener noreferrer">Google Drive ↗</a><a href="https://open.spotify.com/" target="_blank" rel="noopener noreferrer">Spotify ↗</a><a href="https://www.google.com/" target="_blank" rel="noopener noreferrer">Web browser ↗</a></div><p class="hint">Services open separately and may ask you to sign in. Choose your personal Google account for your calendar.</p></dialog>
 
 <nav class="dock" aria-label="Joi controls"><div class="visualizer" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><button class="quiet utility-toggle" type="button" id="toggle-left" aria-controls="left-widgets" aria-expanded="false">Today / tasks</button><button class="quiet" id="focus-view" type="button" aria-pressed="false">Focus view</button><button class="quiet utility-toggle" type="button" id="toggle-right" aria-controls="right-widgets" aria-expanded="false">Menus</button><a class="action primary" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT ↗</a><button class="quiet" id="settings">Settings</button><button class="quiet" id="fullscreen">Full screen</button></nav>
-<dialog id="voice-panel" aria-labelledby="voice-title"><div class="panel-head"><div><div class="eyebrow">Voice console</div><h1 id="voice-title">I'm here.</h1></div><button class="quiet close" data-close aria-label="Close voice console">×</button></div><p>Type something for Joi to read aloud, or dictate it with your microphone. Open ChatGPT for AI conversation.</p><label for="words">Words for Joi</label><textarea id="words" maxlength="4000" placeholder="Good evening. What shall we explore?"></textarea><div class="row"><button id="listen">Listen</button><button class="primary" id="speak">Speak</button><button id="stop" disabled>Stop</button></div><p id="message" role="status">Ready when you are.</p><button class="quiet" id="greeting">Try Joi’s greeting</button><p class="hint">This console reads text; it does not generate AI answers. Microphone recognition may use your browser’s online speech service. Use the side panels for tasks, appointments, notes, and app shortcuts.</p></dialog>
-<dialog id="settings-panel" aria-labelledby="settings-title"><div class="panel-head"><div><div class="eyebrow">Make yourself comfortable</div><h1 id="settings-title">Console settings</h1></div><button class="quiet close" data-close aria-label="Close settings">×</button></div><button class="primary" id="voice-setup" type="button">ChatGPT Voice setup guide</button><p class="inline-help">ChatGPT provides your conversation. The device voice controls below are for the separate voice test.</p><label for="voice-choice">Voice for device test</label><select id="voice-choice"><option value="">Device default</option></select><label for="rate">Speaking pace <output id="rate-value">0.92×</output></label><input id="rate" type="range" min="0.6" max="1.3" step="0.02" value="0.92"><label for="brightness">Hologram brightness</label><input id="brightness" type="range" min="0.6" max="1.3" step="0.05" value="1"><label class="check"><input id="motion" type="checkbox" checked> Ambient animation</label><label class="check"><input id="eye-motion" type="checkbox" checked> Blinking &amp; eye movement</label><label class="check"><input id="head-motion" type="checkbox" checked> Head movement &amp; expressions</label><label class="check"><input id="holographic-depth" type="checkbox" checked> Holographic depth</label><p class="inline-help">Subtle portrait animation, independent of ChatGPT Voice. Turning off ambient animation also pauses her eyes, head gestures, light sweep, and particles.</p><div class="row"><button id="preview" class="primary">Preview device voice</button><button id="voice">Voice test</button></div><div class="backup-row"><button id="download-backup" type="button">Download organizer backup</button><button id="restore-backup" type="button">Restore backup</button></div><input id="backup-import" type="file" accept="application/json,.json" hidden><p class="inline-help">Tasks, appointments, and notes are saved in this browser only. Clearing site data removes them. Restore merges backup items with existing items.</p><p class="hint">Preferences stay in this browser. Device voices vary; choose the voice you prefer. Your system’s reduced motion setting is respected.</p></dialog>
+<dialog id="voice-panel" aria-labelledby="voice-title"><div class="panel-head"><div><div class="eyebrow">Voice console</div><h1 id="voice-title">I'm here.</h1></div><button class="quiet close" data-close aria-label="Close voice console">×</button></div><p>Type something for Joi to read aloud, or dictate it with your microphone. Open ChatGPT for AI conversation.</p><label for="words">Words for Joi</label><textarea id="words" maxlength="4000" placeholder="Good evening. What shall we explore?"></textarea><div class="row"><button id="listen">Listen</button><button class="primary" id="speak">Speak</button><button id="stop" disabled>Stop</button></div><p id="message" role="status">Ready when you are.</p><button class="primary" id="watch-words" type="button">Watch Joi read this</button><button class="quiet" id="greeting">Try Joi’s greeting</button><p class="hint">This console reads text; it does not generate AI answers. Microphone recognition may use your browser’s online speech service. Use the side panels for tasks, appointments, notes, and app shortcuts.</p></dialog>
+<dialog id="settings-panel" aria-labelledby="settings-title"><div class="panel-head"><div><div class="eyebrow">Make yourself comfortable</div><h1 id="settings-title">Console settings</h1></div><button class="quiet close" data-close aria-label="Close settings">×</button></div><button class="primary" id="voice-setup" type="button">ChatGPT Voice setup guide</button><p class="inline-help">ChatGPT provides your conversation. The device voice controls below are for the separate voice test.</p><label for="voice-choice">Voice for device test</label><select id="voice-choice"><option value="">Device default</option></select><label for="rate">Speaking pace <output id="rate-value">0.92×</output></label><input id="rate" type="range" min="0.6" max="1.3" step="0.02" value="0.92"><label for="brightness">Hologram brightness</label><input id="brightness" type="range" min="0.6" max="1.3" step="0.05" value="1"><label class="check"><input id="motion" type="checkbox" checked> Ambient animation</label><label class="check"><input id="eye-motion" type="checkbox" checked> Blinking &amp; eye movement</label><label class="check"><input id="head-motion" type="checkbox" checked> Head movement &amp; expressions</label><label class="check"><input id="holographic-depth" type="checkbox" checked> Holographic depth</label><label class="check"><input id="mouth-motion" type="checkbox" checked> Mouth movement during device voice</label><button class="primary" id="watch-demo" type="button">Try Joi speaking</button><p class="inline-help">Device-voice demo with approximate mouth timing. This does not connect to ChatGPT Voice.</p><p class="inline-help">Subtle portrait animation, independent of ChatGPT Voice. Turning off ambient animation also pauses her eyes, head gestures, light sweep, particles, and mouth movement.</p><div class="row"><button id="preview" class="primary">Preview device voice</button><button id="voice">Voice test</button></div><div class="backup-row"><button id="download-backup" type="button">Download organizer backup</button><button id="restore-backup" type="button">Restore backup</button></div><input id="backup-import" type="file" accept="application/json,.json" hidden><p class="inline-help">Tasks, appointments, and notes are saved in this browser only. Clearing site data removes them. Restore merges backup items with existing items.</p><p class="hint">Preferences stay in this browser. Device voices vary; choose the voice you prefer. Your system’s reduced motion setting is respected.</p></dialog>
 <dialog id="setup-panel" aria-labelledby="setup-title"><div class="panel-head"><div><div class="eyebrow">ChatGPT companion</div><h1 id="setup-title">Voice behind the hologram</h1></div><button class="quiet close" data-close aria-label="Close voice setup">×</button></div><p>Use ChatGPT for conversation while this page displays Joi. This mode makes no OpenAI API calls. ChatGPT plan limits still apply.</p><ol class="setup-steps"><li><strong>Open the ChatGPT app.</strong> In Settings → Voice, enable <strong>Background conversations</strong>. The setting’s location can vary by app version.</li><li><strong>Start Voice in a chat.</strong> Tap the Voice icon and choose a voice you like. You can ask: “Call yourself Joi. Speak warmly and calmly, keep replies practical, and help me organize my day.”</li><li><strong>Return to this Joi page in Chrome.</strong> Keep the ChatGPT voice session running in the background. End the call from ChatGPT when you finish.</li></ol><div class="row"><a class="action primary" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT ↗</a><button id="setup-done">Show hologram</button></div><p id="setup-copy-message" role="status"></p><button class="quiet" id="copy-personality">Copy Joi’s conversation instructions</button><textarea id="personality-copy" aria-label="Joi conversation instructions to copy" readonly hidden></textarea><p class="hint">For both apps on screen, open Recent apps, tap an app’s icon, choose “Open in split screen view,” then select the other app if supported. Background mode uses the ChatGPT mobile app; the website link above is an alternative way to open ChatGPT.</p><p class="hint">The avatar’s ambient animation runs independently. This page cannot hear ChatGPT’s replies, detect its call status, or synchronize her mouth. The side panels work independently of ChatGPT Voice.</p></dialog>
 <script>
 'use strict';
@@ -149,10 +153,14 @@ function save(){try{localStorage.setItem('joi-console-settings',JSON.stringify(p
 function apply(){document.body.classList.toggle('still',!prefs.motion);document.documentElement.style.setProperty('--brightness',prefs.brightness);$('rate-value').textContent=prefs.rate.toFixed(2)+'×';}
 function state(){const mode=recognition?'listening':speaking?'speaking':'standby';document.body.classList.toggle('listening',mode==='listening');document.body.classList.toggle('speaking',mode==='speaking');$('status').textContent=mode==='standby'?'Display ready':mode[0].toUpperCase()+mode.slice(1);$('stop').disabled=mode==='standby';$('listen').disabled=Boolean(recognition);$('speak').disabled=Boolean(recognition);}
 function notify(text){$('notice').textContent=text;$('notice').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('notice').hidden=true,5000);}
-function stop(){speechId++;if(recognition){const old=recognition;recognition=null;old.abort();}if(synth)synth.cancel();utterance=null;speaking=false;state();}
-function say(text){if(!synth||!window.SpeechSynthesisUtterance){$('message').textContent='Speech output is unavailable in this browser.';notify('Speech output is unavailable in this browser.');return;}stop();const id=speechId;const u=new SpeechSynthesisUtterance(text);utterance=u;u.rate=prefs.rate;const chosen=synth.getVoices().find(v=>v.voiceURI===prefs.voice);if(chosen){u.voice=chosen;u.lang=chosen.lang;}else{u.lang='en-US';}u.onstart=()=>{if(id!==speechId)return;speaking=true;state();$('message').textContent='Joi is speaking…';};u.onend=()=>{if(id!==speechId)return;utterance=null;speaking=false;state();$('message').textContent='Ready when you are.';};u.onerror=e=>{if(id!==speechId)return;utterance=null;speaking=false;state();$('message').textContent=e.error==='interrupted'?'Stopped.':'Speech could not play. Try another device voice.';};synth.speak(u);}
+function stop(){document.dispatchEvent(new Event('joi-device-stop'));speechId++;if(recognition){const old=recognition;recognition=null;old.abort();}if(synth)synth.cancel();utterance=null;speaking=false;state();}
+function say(text){if(!synth||!window.SpeechSynthesisUtterance){$('message').textContent='Speech output is unavailable in this browser.';notify('Speech output is unavailable in this browser.');return;}stop();const id=speechId;const u=new SpeechSynthesisUtterance(text);utterance=u;u.rate=prefs.rate;const chosen=synth.getVoices().find(v=>v.voiceURI===prefs.voice);if(chosen){u.voice=chosen;u.lang=chosen.lang;}else{u.lang='en-US';}u.onstart=()=>{if(id!==speechId)return;speaking=true;state();$('message').textContent='Joi is speaking…';};u.onend=()=>{if(id!==speechId)return;utterance=null;speaking=false;state();$('message').textContent='Ready when you are.';};u.onerror=e=>{if(id!==speechId)return;utterance=null;speaking=false;state();$('message').textContent=e.error==='interrupted'?'Stopped.':'Speech could not play. Try another device voice.';if(e.error!=='interrupted')notify('Device voice could not play. In Settings, try another voice.');};document.dispatchEvent(new CustomEvent('joi-device-speech',{detail:{utterance:u}}));try{synth.speak(u);}catch{document.dispatchEvent(new Event('joi-device-stop'));utterance=null;speaking=false;state();notify('Device voice could not start. Try another voice in Settings.');}}
 const greeting='Good evening. I’m Joi. Take a breath. We can make a little room for what matters. What would you like to explore?';
 function open(id){$(id).showModal();}function close(dialog){stop();dialog.close();}
+function watchSpeech(dialog,text){dialog.addEventListener('close',()=>say(text),{once:true});close(dialog);}
+$('watch-demo').onclick=()=>watchSpeech($('settings-panel'),'Hello, Adam. I’m Joi. This is my speaking test. My mouth is moving with an estimate of the words, using your device voice.');
+$('watch-words').onclick=()=>{const text=$('words').value.trim();if(!text){$('message').textContent='Type a phrase first, or try Joi’s greeting.';$('words').focus();return;}watchSpeech($('voice-panel'),text);};
+$('stop-avatar-speech').onclick=()=>stop();
 $('voice').onclick=()=>{close($('settings-panel'));open('voice-panel');};$('voice-setup').onclick=()=>{close($('settings-panel'));open('setup-panel');};$('setup-done').onclick=()=>close($('setup-panel'));$('settings').onclick=()=>open('settings-panel');
 document.querySelectorAll('dialog').forEach(d=>{d.querySelector('[data-close]').onclick=()=>close(d);d.addEventListener('cancel',stop);d.addEventListener('close',stop);});
 $('speak').onclick=()=>{const text=$('words').value.trim();if(!text){$('message').textContent='Type a phrase first, or try Joi’s greeting.';$('words').focus();return;}say(text);};
@@ -622,6 +630,106 @@ apply();state();clock();setInterval(clock,30000);loadVoices();if(synth)synth.add
   toggle.addEventListener('change',()=>{enabled=toggle.checked;try{localStorage.setItem(key,enabled?'on':'off');}catch{}apply();});
   document.addEventListener('visibilitychange',apply);
   apply();
+})();
+
+</script>
+<script>
+/* Device-voice prototype: timing from speech events/text, not ChatGPT audio. */
+(() => {
+  'use strict';
+  const canvas=document.querySelector('.speech-mouth'),toggle=document.getElementById('mouth-motion');
+  if(!canvas||!toggle)return;
+  const ctx=canvas.getContext('2d');
+  if(!ctx){toggle.checked=false;toggle.disabled=true;return;}
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+  let enabled=true,ready=false,active=null,raf=0,previous=-Infinity,generation=0;
+  try{enabled=localStorage.getItem('joi-mouth-motion-v1')!=='off';}catch{}
+  toggle.checked=enabled;
+  const W=116,H=82,CX=W/2,CY=H/2,angle=.22,cx=647,cy=345;
+  const image=new Image(),tile=document.createElement('canvas');tile.width=W;tile.height=H;
+  const tc=tile.getContext('2d',{willReadFrequently:true});
+  if(!tc){toggle.checked=false;toggle.disabled=true;return;}
+  let source,output;
+  const allowed=()=>ready&&enabled&&!document.hidden&&!document.body.classList.contains('still')&&!reduced.matches;
+  const ease=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
+  function clear(){cancelAnimationFrame(raf);raf=0;ctx.clearRect(0,0,768,1024);}
+  function render(amount){
+    ctx.clearRect(0,0,768,1024);
+    if(amount<.025)return;
+    const dst=output.data;
+    for(let py=0;py<H;py++)for(let px=0;px<W;px++){
+      const x=px-CX,y=py-CY,i=(py*W+px)*4;dst[i+3]=0;
+      if(Math.abs(x)>45||y < -29||y>34)continue;
+      const arch=Math.max(0,Math.sin(Math.PI*(x/45+1)/2));
+      const upper=-3+5*arch,lower=-3+10.5*arch;
+      const stretch=amount*5*arch;
+      const top=upper-stretch*.25,bottom=lower+stretch*.75;
+      let sy;
+      if(y<top)sy=-29+(y+29)*(upper+29)/(top+29);
+      else if(y>bottom)sy=34-(34-y)*(34-lower)/(34-bottom);
+      else sy=upper+(y-top)*(lower-upper)/Math.max(.001,bottom-top);
+      sy=Math.max(0,Math.min(H-1.001,sy+CY));
+      const iy=Math.floor(sy),f=sy-iy,a=(iy*W+px)*4,b=a+W*4;
+      for(let c=0;c<3;c++)dst[i+c]=source[a+c]*(1-f)+source[b+c]*f;
+      dst[i+3]=Math.round(255*Math.max(0,Math.min(1,(45-Math.abs(x))/5,(y+29)/5,(34-y)/5)));
+    }
+    tc.putImageData(output,0,0);
+    ctx.save();ctx.translate(cx-384,cy);ctx.rotate(angle);ctx.drawImage(tile,-CX,-CY);ctx.restore();
+  }
+  function timeline(text,rate){
+    let end=0;
+    const units=Array.from(text,(char,index)=>{
+      const vowel=/[aeiouy]/i.test(char),pause=/[\s.,!?;:—]/.test(char);
+      const duration=(/[.!?]/.test(char)?230:/[,;:—]/.test(char)?140:/\s/.test(char)?55:vowel?95:60)/rate;
+      const unit={index,start:end,end:end+duration,amplitude:pause||/[mbp]/i.test(char)?0:vowel?.9:.32};
+      end+=duration;return unit;
+    });
+    return units;
+  }
+  function frame(now){
+    raf=0;
+    if(!active||active.paused||!allowed()){clear();return;}
+    if(now-previous<32){raf=requestAnimationFrame(frame);return;}
+    previous=now;
+    const elapsed=now-active.clock+active.offset;
+    while(active.cursor<active.units.length-1&&elapsed>=active.units[active.cursor].end)active.cursor++;
+    const unit=active.units[active.cursor];
+    let amount=0;
+    if(unit&&elapsed<=unit.end){const p=(elapsed-unit.start)/(unit.end-unit.start);amount=unit.amplitude*(.35+.65*Math.sin(Math.PI*Math.max(0,Math.min(1,p))));}
+    // Smooth articulation without leaving the mouth open between words.
+    active.amount+=(amount-active.amount)*.65;
+    render(active.amount);
+    raf=requestAnimationFrame(frame);
+  }
+  function sync(){clear();if(active&&!active.paused&&allowed()){previous=-Infinity;raf=requestAnimationFrame(frame);}}
+  document.addEventListener('joi-device-speech',event=>{
+    const utterance=event.detail?.utterance;if(!utterance)return;
+    active=null;clear();const token=++generation;
+    const session={units:timeline(utterance.text,Math.max(.6,Math.min(1.3,utterance.rate||1))),cursor:0,clock:0,offset:0,amount:0,paused:false};
+    utterance.addEventListener('start',()=>{if(token!==generation)return;active=session;session.clock=performance.now();sync();});
+    utterance.addEventListener('boundary',e=>{
+      if(active!==session||e.name!=='word'||!Number.isFinite(e.charIndex))return;
+      const index=session.units.findIndex(unit=>unit.index>=e.charIndex);
+      if(index<0)return;
+      session.cursor=index;session.offset=session.units[index].start;session.clock=performance.now();
+    });
+    utterance.addEventListener('pause',()=>{if(active!==session)return;session.offset+=performance.now()-session.clock;session.paused=true;clear();});
+    utterance.addEventListener('resume',()=>{if(active!==session)return;session.clock=performance.now();session.paused=false;sync();});
+    const finish=()=>{if(active===session){active=null;clear();}};
+    utterance.addEventListener('end',finish);utterance.addEventListener('error',finish);
+  });
+  document.addEventListener('joi-device-stop',()=>{generation++;active=null;clear();});
+  toggle.addEventListener('change',()=>{enabled=toggle.checked;try{localStorage.setItem('joi-mouth-motion-v1',enabled?'on':'off');}catch{}sync();});
+  reduced.addEventListener('change',sync);
+  new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']});
+  document.addEventListener('visibilitychange',sync);
+  window.addEventListener('pagehide',()=>{generation++;active=null;clear();});
+  image.onload=()=>{
+    try{tc.translate(CX,CY);tc.rotate(-angle);tc.drawImage(image,-cx,-cy);source=tc.getImageData(0,0,W,H).data;tc.setTransform(1,0,0,1,0,0);output=tc.createImageData(W,H);ready=true;sync();}
+    catch{ready=false;clear();toggle.checked=false;toggle.disabled=true;}
+  };
+  image.onerror=()=>{clear();toggle.checked=false;toggle.disabled=true;};
+  image.src=new URL('./joi-clean.png',document.baseURI).href;
 })();
 
 </script>
