@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-joi-release="0.9">
+<html lang="en" data-joi-release="0.10">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -62,10 +62,11 @@ header{z-index:2;pointer-events:none}header>*{pointer-events:auto}header>.clock{
 @media(max-height:600px) and (min-width:651px){.scene{inset:62px 12px 112px}.scene .art,.focus-view .scene .art{width:min(100%,calc((100dvh - 174px) * .75))}}
 @media(prefers-reduced-motion:reduce){.breathing-body{animation:none}}
 
+.face-life{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 </style>
 </head>
 <body>
-<main class="scene" aria-label="Joi holographic illustration"><div class="art"><div class="breathing-body" aria-hidden="true"></div></div><div class="hologram"><div class="beam"></div></div><div class="halo"></div></main>
+<main class="scene" aria-label="Joi holographic illustration"><div class="art"><div class="breathing-body" aria-hidden="true"></div><canvas class="face-life" width="768" height="1024" aria-hidden="true"></canvas></div><div class="hologram"><div class="beam"></div></div><div class="halo"></div></main>
 <header><div class="brand"><span class="wordmark">JOI</span><small>YOUR PERSONAL COMPANION</small></div><div class="live" role="status"><span class="dot" aria-hidden="true"></span><span id="status">Standby</span></div><div class="clock"><time id="clock"></time><small id="date"></small></div></header>
 <p class="notice" id="notice" role="status" hidden></p>
 <aside class="sidebar sidebar-left" id="left-widgets" aria-label="Daily organization">
@@ -85,7 +86,7 @@ header{z-index:2;pointer-events:none}header>*{pointer-events:auto}header>.clock{
 
 <nav class="dock" aria-label="Joi controls"><div class="visualizer" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><button class="quiet utility-toggle" type="button" id="toggle-left" aria-controls="left-widgets" aria-expanded="false">Today / tasks</button><button class="quiet" id="focus-view" type="button" aria-pressed="false">Focus view</button><button class="quiet utility-toggle" type="button" id="toggle-right" aria-controls="right-widgets" aria-expanded="false">Menus</button><a class="action primary" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT ↗</a><button class="quiet" id="settings">Settings</button><button class="quiet" id="fullscreen">Full screen</button></nav>
 <dialog id="voice-panel" aria-labelledby="voice-title"><div class="panel-head"><div><div class="eyebrow">Voice console</div><h1 id="voice-title">I'm here.</h1></div><button class="quiet close" data-close aria-label="Close voice console">×</button></div><p>Type something for Joi to read aloud, or dictate it with your microphone. Open ChatGPT for AI conversation.</p><label for="words">Words for Joi</label><textarea id="words" maxlength="4000" placeholder="Good evening. What shall we explore?"></textarea><div class="row"><button id="listen">Listen</button><button class="primary" id="speak">Speak</button><button id="stop" disabled>Stop</button></div><p id="message" role="status">Ready when you are.</p><button class="quiet" id="greeting">Try Joi’s greeting</button><p class="hint">This console reads text; it does not generate AI answers. Microphone recognition may use your browser’s online speech service. Use the side panels for tasks, appointments, notes, and app shortcuts.</p></dialog>
-<dialog id="settings-panel" aria-labelledby="settings-title"><div class="panel-head"><div><div class="eyebrow">Make yourself comfortable</div><h1 id="settings-title">Console settings</h1></div><button class="quiet close" data-close aria-label="Close settings">×</button></div><button class="primary" id="voice-setup" type="button">ChatGPT Voice setup guide</button><p class="inline-help">ChatGPT provides your conversation. The device voice controls below are for the separate voice test.</p><label for="voice-choice">Voice for device test</label><select id="voice-choice"><option value="">Device default</option></select><label for="rate">Speaking pace <output id="rate-value">0.92×</output></label><input id="rate" type="range" min="0.6" max="1.3" step="0.02" value="0.92"><label for="brightness">Hologram brightness</label><input id="brightness" type="range" min="0.6" max="1.3" step="0.05" value="1"><label class="check"><input id="motion" type="checkbox" checked> Ambient animation</label><div class="row"><button id="preview" class="primary">Preview device voice</button><button id="voice">Voice test</button></div><div class="backup-row"><button id="download-backup" type="button">Download organizer backup</button><button id="restore-backup" type="button">Restore backup</button></div><input id="backup-import" type="file" accept="application/json,.json" hidden><p class="inline-help">Tasks, appointments, and notes are saved in this browser only. Clearing site data removes them. Restore merges backup items with existing items.</p><p class="hint">Preferences stay in this browser. Device voices vary; choose the voice you prefer. Your system’s reduced motion setting is respected.</p></dialog>
+<dialog id="settings-panel" aria-labelledby="settings-title"><div class="panel-head"><div><div class="eyebrow">Make yourself comfortable</div><h1 id="settings-title">Console settings</h1></div><button class="quiet close" data-close aria-label="Close settings">×</button></div><button class="primary" id="voice-setup" type="button">ChatGPT Voice setup guide</button><p class="inline-help">ChatGPT provides your conversation. The device voice controls below are for the separate voice test.</p><label for="voice-choice">Voice for device test</label><select id="voice-choice"><option value="">Device default</option></select><label for="rate">Speaking pace <output id="rate-value">0.92×</output></label><input id="rate" type="range" min="0.6" max="1.3" step="0.02" value="0.92"><label for="brightness">Hologram brightness</label><input id="brightness" type="range" min="0.6" max="1.3" step="0.05" value="1"><label class="check"><input id="motion" type="checkbox" checked> Ambient animation</label><label class="check"><input id="eye-motion" type="checkbox" checked> Blinking &amp; eye movement</label><p class="inline-help">Subtle portrait animation, independent of ChatGPT Voice. Turning off ambient animation also pauses her eyes.</p><div class="row"><button id="preview" class="primary">Preview device voice</button><button id="voice">Voice test</button></div><div class="backup-row"><button id="download-backup" type="button">Download organizer backup</button><button id="restore-backup" type="button">Restore backup</button></div><input id="backup-import" type="file" accept="application/json,.json" hidden><p class="inline-help">Tasks, appointments, and notes are saved in this browser only. Clearing site data removes them. Restore merges backup items with existing items.</p><p class="hint">Preferences stay in this browser. Device voices vary; choose the voice you prefer. Your system’s reduced motion setting is respected.</p></dialog>
 <dialog id="setup-panel" aria-labelledby="setup-title"><div class="panel-head"><div><div class="eyebrow">ChatGPT companion</div><h1 id="setup-title">Voice behind the hologram</h1></div><button class="quiet close" data-close aria-label="Close voice setup">×</button></div><p>Use ChatGPT for conversation while this page displays Joi. This mode makes no OpenAI API calls. ChatGPT plan limits still apply.</p><ol class="setup-steps"><li><strong>Open the ChatGPT app.</strong> In Settings → Voice, enable <strong>Background conversations</strong>. The setting’s location can vary by app version.</li><li><strong>Start Voice in a chat.</strong> Tap the Voice icon and choose a voice you like. You can ask: “Call yourself Joi. Speak warmly and calmly, keep replies practical, and help me organize my day.”</li><li><strong>Return to this Joi page in Chrome.</strong> Keep the ChatGPT voice session running in the background. End the call from ChatGPT when you finish.</li></ol><div class="row"><a class="action primary" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT ↗</a><button id="setup-done">Show hologram</button></div><p id="setup-copy-message" role="status"></p><button class="quiet" id="copy-personality">Copy Joi’s conversation instructions</button><textarea id="personality-copy" aria-label="Joi conversation instructions to copy" readonly hidden></textarea><p class="hint">For both apps on screen, open Recent apps, tap an app’s icon, choose “Open in split screen view,” then select the other app if supported. Background mode uses the ChatGPT mobile app; the website link above is an alternative way to open ChatGPT.</p><p class="hint">The avatar’s ambient animation runs independently. This page cannot hear ChatGPT’s replies, detect its call status, or synchronize her mouth. The side panels work independently of ChatGPT Voice.</p></dialog>
 <script>
 'use strict';
@@ -324,5 +325,132 @@ apply();state();clock();setInterval(clock,30000);loadVoices();if(synth)synth.add
   chooseTab(layout.tab);setFocus(layout.focus);
 })();
 </script>
+<script>
+/* Local portrait animation. No camera, microphone, network service, or voice coupling. */
+(() => {
+  'use strict';
+  const canvas = document.querySelector('.face-life');
+  const toggle = document.getElementById('eye-motion');
+  if (!canvas || !toggle) return;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) { toggle.checked = false; toggle.disabled = true; return; }
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const key = 'joi-eye-motion-v1';
+  let enabled = true;
+  try { enabled = localStorage.getItem(key) !== 'off'; } catch {}
+  toggle.checked = enabled;
+  const image = new Image();
+  const eyes = [
+    { x:614, y:232, angle:.30, half:30, upper:9, lower:8 },
+    { x:725, y:257, angle:.10, half:29, upper:9, lower:8 }
+  ];
+  const W = 84, H = 64, CX = W / 2, CY = H / 2;
+  let ready = false, running = false, timer = 0, raf = 0;
+  let nextBlink = 0, nextLook = 0, blinkStart = -Infinity, blinkDuration = 250;
+  let doubleAt = Infinity, returning = false;
+  let gaze = {x:0,y:0}, from = {...gaze}, to = {...gaze}, gazeStart = -Infinity;
+  let previousFrame = -Infinity;
+  const rand = (a,b) => a + Math.random() * (b-a);
+  const smooth = t => {t = Math.max(0,Math.min(1,t)); return t*t*(3-2*t);};
+  const allowed = () => ready && enabled && !document.hidden && !document.body.classList.contains('still') && !reduced.matches;
+
+  function prepare(eye) {
+    const texture = document.createElement('canvas'); texture.width=W; texture.height=H;
+    const tc = texture.getContext('2d', {willReadFrequently:true});
+    tc.translate(CX,CY); tc.rotate(-eye.angle); tc.drawImage(image,-eye.x,-eye.y);
+    eye.pixels = tc.getImageData(0,0,W,H).data;
+    eye.tile = document.createElement('canvas'); eye.tile.width=W; eye.tile.height=H;
+    eye.context = eye.tile.getContext('2d');
+    eye.output = eye.context.createImageData(W,H);
+  }
+
+  function render(closure, dx, dy) {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    if (closure < .001 && Math.abs(dx)+Math.abs(dy)<.001) return;
+    for (const eye of eyes) {
+      const src = eye.pixels, dest = eye.output.data;
+      for (let py=0;py<H;py++) for (let px=0;px<W;px++) {
+        const x=px-CX, y=py-CY, idx=(py*W+px)*4;
+        dest[idx+3]=0;
+        if (Math.abs(x)>=eye.half || y < -23 || y > 19) continue;
+        const arch = Math.sin(Math.PI*(x/eye.half+1)/2);
+        const upper=-eye.upper*arch, lower=eye.lower*arch;
+        const gap=lower-upper;
+        const shut=Math.min(.985,closure);
+        const top=upper+gap*shut*.88, bottom=lower-gap*shut*.12;
+        let sy=y, sx=x;
+        if (y<top) sy=-23+(y+23)*(upper+23)/(top+23);
+        else if (y>bottom) sy=19-(19-y)*(19-lower)/(19-bottom);
+        else {
+          sy=upper+(y-top)*gap/Math.max(.001,bottom-top);
+          const interior=Math.sin(Math.PI*(sy-upper)/Math.max(.001,gap))*arch;
+          sx -= dx*interior; sy -= dy*interior;
+        }
+        sx=Math.max(0,Math.min(W-1.001,sx+CX)); sy=Math.max(0,Math.min(H-1.001,sy+CY));
+        const ix=Math.floor(sx), iy=Math.floor(sy), fx=sx-ix, fy=sy-iy;
+        const a=(iy*W+ix)*4,b=a+4,c=a+W*4,d=c+4;
+        for(let k=0;k<3;k++) dest[idx+k]=(src[a+k]*(1-fx)+src[b+k]*fx)*(1-fy)+(src[c+k]*(1-fx)+src[d+k]*fx)*fy;
+        const feather=Math.min(1,(eye.half-Math.abs(x))/3,(y+23)/3,(19-y)/3);
+        dest[idx+3]=Math.round(255*Math.max(0,feather));
+      }
+      eye.context.putImageData(eye.output,0,0);
+      ctx.save(); ctx.translate(eye.x-384,eye.y); ctx.rotate(eye.angle);
+      ctx.drawImage(eye.tile,-CX,-CY); ctx.restore();
+    }
+  }
+
+  function frame(now) {
+    raf=0;
+    if (!allowed()) { stop(); return; }
+    if (now-previousFrame < 32) { raf=requestAnimationFrame(frame); return; }
+    previousFrame=now;
+    if (now>=doubleAt) {blinkStart=now; blinkDuration=rand(210,260); doubleAt=Infinity;}
+    if (now>=nextBlink) {
+      blinkStart=now; blinkDuration=rand(220,280);
+      doubleAt=Math.random()<.12 ? now+blinkDuration+rand(140,230) : Infinity;
+      nextBlink=now+rand(3400,7400);
+    }
+    if (now>=nextLook) {
+      from={...gaze}; to=returning?{x:0,y:0}:{x:rand(-1.8,1.8),y:rand(-.65,.65)};
+      gazeStart=now; returning=!returning;
+      nextLook=now+(returning?rand(1100,2100):rand(4500,8500));
+    }
+    const progress=(now-blinkStart)/blinkDuration;
+    // Fast closing, a short pause, and a slower reopening.
+    const closure=progress<0||progress>=1 ? 0 : progress<.36 ? smooth(progress/.36) : progress<.44 ? 1 : 1-smooth((progress-.44)/.56);
+    const blend=smooth((now-gazeStart)/360);
+    gaze={x:from.x+(to.x-from.x)*blend,y:from.y+(to.y-from.y)*blend};
+    render(closure,gaze.x,gaze.y);
+    if (progress<1 || blend<1) raf=requestAnimationFrame(frame);
+    else timer=setTimeout(() => {timer=0;raf=requestAnimationFrame(frame);},Math.max(20,Math.min(nextBlink,nextLook,doubleAt)-now));
+  }
+
+  function stop() {
+    clearTimeout(timer); cancelAnimationFrame(raf); timer=raf=0; running=false;
+    gaze={x:0,y:0};from={...gaze};to={...gaze};blinkStart=gazeStart=-Infinity;doubleAt=Infinity;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+  function sync() {
+    if (!allowed()) {stop();return;}
+    if (running) return;
+    running=true;const now=performance.now();
+    nextBlink=now+rand(1800,4200);nextLook=now+rand(2500,5200);returning=false;previousFrame=-Infinity;
+    raf=requestAnimationFrame(frame);
+  }
+  toggle.addEventListener('change', () => {
+    enabled=toggle.checked;try {localStorage.setItem(key,enabled?'on':'off');}catch{}sync();
+  });
+  document.addEventListener('visibilitychange',sync);
+  window.addEventListener('pagehide',stop);
+  window.addEventListener('pageshow',sync);
+  reduced.addEventListener('change',sync);
+  new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']});
+  image.onload=() => {try{for(const eye of eyes)prepare(eye);ready=true;sync();}catch{stop();toggle.checked=false;toggle.disabled=true;}};
+  image.onerror=() => {stop();toggle.checked=false;toggle.disabled=true;};
+  image.src=new URL('./joi-clean.png',document.baseURI).href;
+})();
+
+</script>
 </body>
 </html>
+
