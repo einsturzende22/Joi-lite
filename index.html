@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-joi-release="0.11">
+<html lang="en" data-joi-release="0.12">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -69,10 +69,55 @@ header{z-index:2;pointer-events:none}header>*{pointer-events:auto}header>.clock{
 .expression-life{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 body.still .head-life{transform:none!important;transition:none!important}
 @media(prefers-reduced-motion:reduce){.head-life{transform:none!important;transition:none!important}}
+/* Projection depth stays inside the portrait; the city and interface stay steady. */
+.holo-depth{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:hidden;mix-blend-mode:screen}
+.holo-depth svg{display:block;width:100%;height:100%;overflow:hidden}
+.holo-rim{fill:none;stroke:#8cefff;stroke-width:2;opacity:.15}
+.holo-sweep{animation:projection-sweep 19s linear infinite;opacity:0;will-change:transform,opacity}
+@keyframes projection-sweep{0%,12%{transform:translateY(0);opacity:0}17%{opacity:.14}47%{transform:translateY(1020px);opacity:.09}53%,100%{transform:translateY(1160px);opacity:0}}
+.holo-particle{opacity:0;animation:projection-drift var(--duration,13s) ease-in-out var(--delay,0s) infinite;will-change:transform,opacity}
+@keyframes projection-drift{0%,100%{opacity:0;transform:translate(0,12px)}20%{opacity:.18}65%{opacity:.35}92%{opacity:0;transform:translate(var(--drift,7px),-50px)}}
+.holo-depth.depth-paused *{animation-play-state:paused!important}
+body.still .holo-sweep,body.still .holo-particle{animation:none!important;opacity:0!important}
+@media(prefers-reduced-motion:reduce){.holo-sweep,.holo-particle{animation:none!important;opacity:0!important}}
+
 </style>
 </head>
 <body>
-<main class="scene" aria-label="Joi holographic illustration"><div class="art"><div class="breathing-body" aria-hidden="true"></div><div class="head-life" aria-hidden="true"><canvas class="expression-life" width="768" height="1024"></canvas><canvas class="face-life" width="768" height="1024" aria-hidden="true"></canvas></div></div><div class="hologram"><div class="beam"></div></div><div class="halo"></div></main>
+<main class="scene" aria-label="Joi holographic illustration"><div class="art"><div class="breathing-body" aria-hidden="true"></div><div class="head-life" aria-hidden="true"><canvas class="expression-life" width="768" height="1024"></canvas><canvas class="face-life" width="768" height="1024" aria-hidden="true"></canvas></div><div class="holo-depth" aria-hidden="true">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 768 1024" focusable="false">
+  <defs>
+    <path id="projection-shape" d="M132 -24C96 20 98 96 110 155C113 177 129 191 145 206C137 265 157 319 194 352L171 386C124 388 85 367 45 376C3 380 -19 402 -23 449L-26 778C42 803 95 813 157 809L500 821C562 823 620 820 654 806L644 788C597 768 552 749 503 748C497 711 482 682 470 650C465 567 458 506 456 452C455 413 426 391 391 389L369 365C405 335 427 305 433 267C457 212 457 114 447 50L406 -24Z"/>
+    <mask id="projection-mask"><use href="#projection-shape" fill="white"/></mask>
+    <linearGradient id="projection-light" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#8deaff" stop-opacity="0"/><stop offset=".48" stop-color="#b9f3ff" stop-opacity=".16"/><stop offset=".57" stop-color="#b9f3ff" stop-opacity=".85"/><stop offset="1" stop-color="#e1a4ff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="projection-volume"><stop stop-color="#85dfff" stop-opacity=".10"/><stop offset="1" stop-color="#85dfff" stop-opacity="0"/></radialGradient>
+    <linearGradient id="projection-edge" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#b78bff" stop-opacity=".09"/><stop offset=".22" stop-color="#b78bff" stop-opacity="0"/><stop offset=".62" stop-color="#8cefff" stop-opacity="0"/><stop offset="1" stop-color="#8cefff" stop-opacity=".13"/>
+    </linearGradient>
+    <filter id="projection-soft" x="-15%" y="-15%" width="130%" height="130%"><feGaussianBlur stdDeviation="2"/></filter>
+  </defs>
+  <g mask="url(#projection-mask)">
+    <rect width="768" height="840" fill="url(#projection-edge)"/>
+    <use href="#projection-shape" class="holo-rim" filter="url(#projection-soft)"/>
+    <rect class="holo-sweep" x="0" y="-160" width="768" height="140" fill="url(#projection-light)"/>
+  </g>
+  <ellipse cx="279" cy="802" rx="208" ry="46" fill="url(#projection-volume)"/>
+  <ellipse cx="279" cy="803" rx="175" ry="11" fill="none" stroke="#8cefff" stroke-width="1" opacity=".1"/>
+  <g fill="#b4efff">
+    <circle class="holo-particle" cx="66" cy="465" r="1.2" style="--duration:14s;--delay:-3s;--drift:6px"/>
+    <circle class="holo-particle" cx="477" cy="437" r="1" style="--duration:17s;--delay:-8s;--drift:-8px"/>
+    <circle class="holo-particle" cx="104" cy="637" r="1.4" style="--duration:16s;--delay:-11s;--drift:5px"/>
+    <circle class="holo-particle" cx="506" cy="596" r="1.1" style="--duration:13s;--delay:-5s;--drift:-6px"/>
+    <circle class="holo-particle" cx="406" cy="856" r="1.3" style="--duration:18s;--delay:-15s;--drift:9px"/>
+    <circle class="holo-particle" cx="154" cy="835" r="1" style="--duration:15s;--delay:-7s;--drift:-5px"/>
+    <circle class="holo-particle" cx="559" cy="764" r="1.3" fill="#e2bcff" style="--duration:19s;--delay:-12s;--drift:7px"/>
+    <circle class="holo-particle" cx="335" cy="741" r=".9" fill="#e2bcff" style="--duration:12s;--delay:-2s;--drift:4px"/>
+  </g>
+</svg>
+</div>
+</div><div class="hologram"><div class="beam"></div></div><div class="halo"></div></main>
 <header><div class="brand"><span class="wordmark">JOI</span><small>YOUR PERSONAL COMPANION</small></div><div class="live" role="status"><span class="dot" aria-hidden="true"></span><span id="status">Standby</span></div><div class="clock"><time id="clock"></time><small id="date"></small></div></header>
 <p class="notice" id="notice" role="status" hidden></p>
 <aside class="sidebar sidebar-left" id="left-widgets" aria-label="Daily organization">
@@ -92,7 +137,7 @@ body.still .head-life{transform:none!important;transition:none!important}
 
 <nav class="dock" aria-label="Joi controls"><div class="visualizer" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><button class="quiet utility-toggle" type="button" id="toggle-left" aria-controls="left-widgets" aria-expanded="false">Today / tasks</button><button class="quiet" id="focus-view" type="button" aria-pressed="false">Focus view</button><button class="quiet utility-toggle" type="button" id="toggle-right" aria-controls="right-widgets" aria-expanded="false">Menus</button><a class="action primary" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT ↗</a><button class="quiet" id="settings">Settings</button><button class="quiet" id="fullscreen">Full screen</button></nav>
 <dialog id="voice-panel" aria-labelledby="voice-title"><div class="panel-head"><div><div class="eyebrow">Voice console</div><h1 id="voice-title">I'm here.</h1></div><button class="quiet close" data-close aria-label="Close voice console">×</button></div><p>Type something for Joi to read aloud, or dictate it with your microphone. Open ChatGPT for AI conversation.</p><label for="words">Words for Joi</label><textarea id="words" maxlength="4000" placeholder="Good evening. What shall we explore?"></textarea><div class="row"><button id="listen">Listen</button><button class="primary" id="speak">Speak</button><button id="stop" disabled>Stop</button></div><p id="message" role="status">Ready when you are.</p><button class="quiet" id="greeting">Try Joi’s greeting</button><p class="hint">This console reads text; it does not generate AI answers. Microphone recognition may use your browser’s online speech service. Use the side panels for tasks, appointments, notes, and app shortcuts.</p></dialog>
-<dialog id="settings-panel" aria-labelledby="settings-title"><div class="panel-head"><div><div class="eyebrow">Make yourself comfortable</div><h1 id="settings-title">Console settings</h1></div><button class="quiet close" data-close aria-label="Close settings">×</button></div><button class="primary" id="voice-setup" type="button">ChatGPT Voice setup guide</button><p class="inline-help">ChatGPT provides your conversation. The device voice controls below are for the separate voice test.</p><label for="voice-choice">Voice for device test</label><select id="voice-choice"><option value="">Device default</option></select><label for="rate">Speaking pace <output id="rate-value">0.92×</output></label><input id="rate" type="range" min="0.6" max="1.3" step="0.02" value="0.92"><label for="brightness">Hologram brightness</label><input id="brightness" type="range" min="0.6" max="1.3" step="0.05" value="1"><label class="check"><input id="motion" type="checkbox" checked> Ambient animation</label><label class="check"><input id="eye-motion" type="checkbox" checked> Blinking &amp; eye movement</label><label class="check"><input id="head-motion" type="checkbox" checked> Head movement &amp; expressions</label><p class="inline-help">Subtle portrait animation, independent of ChatGPT Voice. Turning off ambient animation also pauses her eyes and head gestures.</p><div class="row"><button id="preview" class="primary">Preview device voice</button><button id="voice">Voice test</button></div><div class="backup-row"><button id="download-backup" type="button">Download organizer backup</button><button id="restore-backup" type="button">Restore backup</button></div><input id="backup-import" type="file" accept="application/json,.json" hidden><p class="inline-help">Tasks, appointments, and notes are saved in this browser only. Clearing site data removes them. Restore merges backup items with existing items.</p><p class="hint">Preferences stay in this browser. Device voices vary; choose the voice you prefer. Your system’s reduced motion setting is respected.</p></dialog>
+<dialog id="settings-panel" aria-labelledby="settings-title"><div class="panel-head"><div><div class="eyebrow">Make yourself comfortable</div><h1 id="settings-title">Console settings</h1></div><button class="quiet close" data-close aria-label="Close settings">×</button></div><button class="primary" id="voice-setup" type="button">ChatGPT Voice setup guide</button><p class="inline-help">ChatGPT provides your conversation. The device voice controls below are for the separate voice test.</p><label for="voice-choice">Voice for device test</label><select id="voice-choice"><option value="">Device default</option></select><label for="rate">Speaking pace <output id="rate-value">0.92×</output></label><input id="rate" type="range" min="0.6" max="1.3" step="0.02" value="0.92"><label for="brightness">Hologram brightness</label><input id="brightness" type="range" min="0.6" max="1.3" step="0.05" value="1"><label class="check"><input id="motion" type="checkbox" checked> Ambient animation</label><label class="check"><input id="eye-motion" type="checkbox" checked> Blinking &amp; eye movement</label><label class="check"><input id="head-motion" type="checkbox" checked> Head movement &amp; expressions</label><label class="check"><input id="holographic-depth" type="checkbox" checked> Holographic depth</label><p class="inline-help">Subtle portrait animation, independent of ChatGPT Voice. Turning off ambient animation also pauses her eyes, head gestures, light sweep, and particles.</p><div class="row"><button id="preview" class="primary">Preview device voice</button><button id="voice">Voice test</button></div><div class="backup-row"><button id="download-backup" type="button">Download organizer backup</button><button id="restore-backup" type="button">Restore backup</button></div><input id="backup-import" type="file" accept="application/json,.json" hidden><p class="inline-help">Tasks, appointments, and notes are saved in this browser only. Clearing site data removes them. Restore merges backup items with existing items.</p><p class="hint">Preferences stay in this browser. Device voices vary; choose the voice you prefer. Your system’s reduced motion setting is respected.</p></dialog>
 <dialog id="setup-panel" aria-labelledby="setup-title"><div class="panel-head"><div><div class="eyebrow">ChatGPT companion</div><h1 id="setup-title">Voice behind the hologram</h1></div><button class="quiet close" data-close aria-label="Close voice setup">×</button></div><p>Use ChatGPT for conversation while this page displays Joi. This mode makes no OpenAI API calls. ChatGPT plan limits still apply.</p><ol class="setup-steps"><li><strong>Open the ChatGPT app.</strong> In Settings → Voice, enable <strong>Background conversations</strong>. The setting’s location can vary by app version.</li><li><strong>Start Voice in a chat.</strong> Tap the Voice icon and choose a voice you like. You can ask: “Call yourself Joi. Speak warmly and calmly, keep replies practical, and help me organize my day.”</li><li><strong>Return to this Joi page in Chrome.</strong> Keep the ChatGPT voice session running in the background. End the call from ChatGPT when you finish.</li></ol><div class="row"><a class="action primary" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT ↗</a><button id="setup-done">Show hologram</button></div><p id="setup-copy-message" role="status"></p><button class="quiet" id="copy-personality">Copy Joi’s conversation instructions</button><textarea id="personality-copy" aria-label="Joi conversation instructions to copy" readonly hidden></textarea><p class="hint">For both apps on screen, open Recent apps, tap an app’s icon, choose “Open in split screen view,” then select the other app if supported. Background mode uses the ChatGPT mobile app; the website link above is an alternative way to open ChatGPT.</p><p class="hint">The avatar’s ambient animation runs independently. This page cannot hear ChatGPT’s replies, detect its call status, or synchronize her mouth. The side panels work independently of ChatGPT Voice.</p></dialog>
 <script>
 'use strict';
@@ -559,6 +604,24 @@ apply();state();clock();setInterval(clock,30000);loadVoices();if(synth)synth.add
   image.onload=()=>{try{patches.forEach(prepare);ready=true;sync();}catch{stop();toggle.checked=false;toggle.disabled=true;}};
   image.onerror=()=>{stop();toggle.checked=false;toggle.disabled=true;};
   image.src=new URL('./joi-clean.png',document.baseURI).href;
+})();
+
+</script>
+<script>
+(() => {
+  'use strict';
+  const layer=document.querySelector('.holo-depth'),toggle=document.getElementById('holographic-depth');
+  if(!layer||!toggle)return;
+  const key='joi-holographic-depth-v1';
+  let enabled=true;
+  try{enabled=localStorage.getItem(key)!=='off';}catch{}
+  function apply(){
+    toggle.checked=enabled;layer.hidden=!enabled;
+    layer.classList.toggle('depth-paused',document.hidden);
+  }
+  toggle.addEventListener('change',()=>{enabled=toggle.checked;try{localStorage.setItem(key,enabled?'on':'off');}catch{}apply();});
+  document.addEventListener('visibilitychange',apply);
+  apply();
 })();
 
 </script>
