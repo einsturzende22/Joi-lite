@@ -46,8 +46,8 @@ header{z-index:2;pointer-events:none}header>*{pointer-events:auto}header>.clock{
 .scene{inset:72px 12px calc(138px + env(safe-area-inset-bottom));display:flex;align-items:center;justify-content:center;overflow:visible}
 .scene::before,.scene::after{display:none}
 .scene .art,.focus-view .scene .art{
- position:relative;inset:auto;flex:none;width:min(100%,calc((100dvh - 210px - env(safe-area-inset-bottom)) * .8));height:auto;aspect-ratio:4/5;
- background-image:url('./joi-clean.png');background-size:auto 100%;background-position:46% center;background-repeat:no-repeat;
+ position:relative;inset:auto;flex:none;width:min(100%,calc((100dvh - 210px - env(safe-area-inset-bottom)) * .75));height:auto;aspect-ratio:3/4;
+ background-image:url('./joi-clean.png');background-size:auto 100%;background-position:50% center;background-repeat:no-repeat;
  animation:none;transform:none;overflow:hidden;border-radius:20px;
  filter:brightness(var(--brightness));isolation:isolate
 }
@@ -58,8 +58,8 @@ header{z-index:2;pointer-events:none}header>*{pointer-events:auto}header>.clock{
  animation:torso-breath 6s ease-in-out infinite;will-change:transform}
 @keyframes torso-breath{0%,100%{transform:scale(1)}50%{transform:translateY(-.7px) scale(1.002,1.006)}}
 .scene>.hologram,.scene>.halo{display:none}
-@media(min-width:1001px){.scene{inset:82px clamp(250px,27vw,340px) 100px}.scene .art,.focus-view .scene .art{width:min(100%,calc((100dvh - 182px) * .8))}.focus-view .scene{left:12px;right:12px}}
-@media(max-height:600px) and (min-width:651px){.scene{inset:62px 12px 112px}.scene .art,.focus-view .scene .art{width:min(100%,calc((100dvh - 174px) * .8))}}
+@media(min-width:1001px){.scene{inset:82px clamp(250px,27vw,340px) 100px}.scene .art,.focus-view .scene .art{width:min(100%,calc((100dvh - 182px) * .75))}.focus-view .scene{left:12px;right:12px}}
+@media(max-height:600px) and (min-width:651px){.scene{inset:62px 12px 112px}.scene .art,.focus-view .scene .art{width:min(100%,calc((100dvh - 174px) * .75))}}
 @media(prefers-reduced-motion:reduce){.breathing-body{animation:none}}
 
 </style>
