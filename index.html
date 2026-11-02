@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-joi-release="0.18">
+<html lang="en" data-joi-release="0.19">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -91,6 +91,7 @@ body.still .holo-sweep,body.still .holo-particle{animation:none!important;opacit
 
 
 .neural-card{border:1px solid var(--line);border-radius:14px;padding:0 13px 12px;margin-top:12px}.neural-card .row{align-items:stretch}.neural-card button{font-size:12px;padding:10px}#neural-status{min-height:36px}#neural-preview{width:100%;margin-top:10px}
+.expression-previews{display:flex;gap:7px;margin-top:12px}.expression-previews button{flex:1;font-size:12px;padding:10px 6px}.head-life.gestures-active{transition:transform 1.2s cubic-bezier(.4,0,.2,1)}
 </style>
 </head>
 <body>
@@ -131,7 +132,7 @@ body.still .holo-sweep,body.still .holo-particle{animation:none!important;opacit
 <header><div class="brand"><span class="wordmark">JOI</span><small>YOUR PERSONAL COMPANION</small></div><div class="live" role="status"><span class="dot" aria-hidden="true"></span><span id="status">Standby</span></div><div class="clock"><time id="clock"></time><small id="date"></small></div></header>
 <div class="speech-stop"><small>Joi’s reading voice</small><button id="stop-avatar-speech" type="button">Stop voice</button></div><p class="notice" id="notice" role="status" hidden></p>
 <aside class="sidebar sidebar-left" id="left-widgets" aria-label="Daily organization">
-  <section class="widget"><div class="widget-head"><h2>Your next move</h2><span class="release-stamp">v0.18</span></div><div class="mission-actions"><button type="button" class="primary" id="open-briefing">Brief me</button><button type="button" id="open-capture">Capture tasks</button><button type="button" id="focus-mini">Focus timer</button></div><p class="meta">Your saved organizer · on this device</p></section>
+  <section class="widget"><div class="widget-head"><h2>Your next move</h2><span class="release-stamp">v0.19</span></div><div class="mission-actions"><button type="button" class="primary" id="open-briefing">Brief me</button><button type="button" id="open-capture">Capture tasks</button><button type="button" id="focus-mini">Focus timer</button></div><p class="meta">Your saved organizer · on this device</p></section>
 
   <section class="widget"><div class="widget-head"><h2>Today &amp; next</h2><button type="button" id="add-appointment" aria-label="Add an appointment">+</button></div><p class="meta" id="today-heading"></p><ul class="agenda-list" id="agenda-list"></ul><button class="small-link quiet" id="toggle-appointments" type="button">Show past appointments</button><a class="small-link" href="https://calendar.google.com/calendar/" target="_blank" rel="noopener noreferrer">Open Google Calendar ↗</a></section>
   <section class="widget"><div class="widget-head"><h2>Quick tasks <span id="task-count"></span></h2><button type="button" id="add-task" aria-label="Add a task">+</button></div><p class="meta">This tablet · separate from Todoist</p><ul class="task-list" id="task-list"></ul><button class="small-link quiet" id="toggle-completed" type="button">Show completed</button><a class="small-link" href="https://app.todoist.com/" target="_blank" rel="noopener noreferrer">Open Todoist ↗</a></section>
@@ -149,7 +150,7 @@ body.still .holo-sweep,body.still .holo-particle{animation:none!important;opacit
 
 <nav class="dock" aria-label="Joi controls"><div class="visualizer" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><button class="quiet utility-toggle" type="button" id="toggle-left" aria-controls="left-widgets" aria-expanded="false">Today / tasks</button><button class="quiet" id="focus-view" type="button" aria-pressed="false">Focus view</button><button class="quiet utility-toggle" type="button" id="toggle-right" aria-controls="right-widgets" aria-expanded="false">Menus</button><a class="action primary" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT ↗</a><button class="quiet" id="settings">Settings</button><button class="quiet" id="fullscreen">Full screen</button></nav>
 <dialog id="voice-panel" aria-labelledby="voice-title"><div class="panel-head"><div><div class="eyebrow">Voice console</div><h1 id="voice-title">I'm here.</h1></div><button class="quiet close" data-close aria-label="Close voice console">×</button></div><p>Type something for Joi to read aloud, or dictate it with your microphone. Open ChatGPT for AI conversation.</p><label for="words">Words for Joi</label><textarea id="words" maxlength="4000" placeholder="Good evening. What shall we explore?"></textarea><div class="row"><button id="listen">Listen</button><button class="primary" id="speak">Speak</button><button id="stop" disabled>Stop</button></div><p id="message" role="status">Ready when you are.</p><button class="primary" id="watch-words" type="button">Watch Joi read this</button><button class="quiet" id="greeting">Try Joi’s greeting</button><p class="hint">This console reads text; it does not generate AI answers. Microphone recognition may use your browser’s online speech service. Use the side panels for tasks, appointments, notes, and app shortcuts.</p></dialog>
-<dialog id="settings-panel" aria-labelledby="settings-title"><div class="panel-head"><div><div class="eyebrow">Make yourself comfortable</div><h1 id="settings-title">Console settings</h1></div><button class="quiet close" data-close aria-label="Close settings">×</button></div><button class="primary" id="voice-setup" type="button">ChatGPT Voice setup guide</button><p class="inline-help">ChatGPT provides your conversation. The reading voice below speaks Joi’s reminders, briefings, and typed text.</p><label for="speech-engine">Joi’s reading voice</label><select id="speech-engine"><option value="device">Device voice · instant</option><option value="neural" disabled>Neural voice · paused for stability</option></select><div class="neural-card"><p class="inline-help">Device voice restored. Local neural voice is paused while we investigate tablet crashes. Your speaking style, pitch, pace, and organizer are preserved.</p></div><label for="voice-choice">Device voice</label><select id="voice-choice"><option value="">Device default</option></select><label for="joi-style">Speaking style</label><select id="joi-style"><option value="intimate">Intimate</option><option value="natural">Natural</option><option value="playful">Playful</option></select><label for="joi-pitch">Device voice pitch <output id="joi-pitch-value">1.04×</output></label><input id="joi-pitch" type="range" min="0.85" max="1.2" step="0.01" value="1.04"><label for="rate">Speaking pace <output id="rate-value">0.92×</output></label><input id="rate" type="range" min="0.6" max="1.3" step="0.02" value="0.92"><label for="brightness">Hologram brightness</label><input id="brightness" type="range" min="0.6" max="1.3" step="0.05" value="1"><label class="check"><input id="motion" type="checkbox" checked> Ambient animation</label><label class="check"><input id="eye-motion" type="checkbox" checked> Blinking &amp; eye movement</label><label class="check"><input id="head-motion" type="checkbox" checked> Head movement &amp; expressions</label><label class="check"><input id="holographic-depth" type="checkbox" checked> Holographic depth</label><label class="check"><input id="mouth-motion" type="checkbox" checked> Mouth movement during speech</label><button class="primary" id="watch-demo" type="button">Try Joi speaking</button><p class="inline-help">Joi uses your selected reading voice. Device voice uses estimated timing for mouth movement.</p><p class="inline-help">Subtle portrait animation, independent of ChatGPT Voice. Turning off ambient animation also pauses her eyes, head gestures, light sweep, particles, and mouth movement.</p><div class="row"><button id="preview" class="primary">Preview voice</button><button id="voice">Voice test</button></div><label class="check"><input type="checkbox" id="keep-awake"> Keep screen awake while Joi is visible</label><p id="awake-status" role="status" class="inline-help">Off. Screen behavior follows your device settings.</p><label for="awareness-mode">Proactive prompts</label><select id="awareness-mode"><option value="all">Reminders + occasional conversation</option><option value="reminders">Task and appointment reminders only</option><option value="off">Off</option></select><button type="button" id="awareness-resume">Resume prompts now</button><p class="inline-help">Prompts appear while Joi is visible. Snoozing an item delays only that reminder.</p><div class="backup-row"><button id="download-backup" type="button">Download organizer backup</button><button id="restore-backup" type="button">Restore backup</button></div><input id="backup-import" type="file" accept="application/json,.json" hidden><p class="inline-help">Tasks, appointments, and notes are saved in this browser only. Clearing site data removes them. Restore merges backup items with existing items.</p><p class="hint">Preferences stay in this browser. Device voices vary; choose the voice you prefer. Your system’s reduced motion setting is respected.</p></dialog>
+<dialog id="settings-panel" aria-labelledby="settings-title"><div class="panel-head"><div><div class="eyebrow">Make yourself comfortable</div><h1 id="settings-title">Console settings</h1></div><button class="quiet close" data-close aria-label="Close settings">×</button></div><button class="primary" id="voice-setup" type="button">ChatGPT Voice setup guide</button><p class="inline-help">ChatGPT provides your conversation. The reading voice below speaks Joi’s reminders, briefings, and typed text.</p><label for="speech-engine">Joi’s reading voice</label><select id="speech-engine"><option value="device">Device voice · instant</option><option value="neural" disabled>Neural voice · paused for stability</option></select><div class="neural-card"><p class="inline-help">Device voice restored. Local neural voice is paused while we investigate tablet crashes. Your speaking style, pitch, pace, and organizer are preserved.</p></div><label for="voice-choice">Device voice</label><select id="voice-choice"><option value="">Device default</option></select><label for="joi-style">Speaking style</label><select id="joi-style"><option value="intimate">Intimate</option><option value="natural">Natural</option><option value="playful">Playful</option></select><label for="joi-pitch">Device voice pitch <output id="joi-pitch-value">1.04×</output></label><input id="joi-pitch" type="range" min="0.85" max="1.2" step="0.01" value="1.04"><label for="rate">Speaking pace <output id="rate-value">0.92×</output></label><input id="rate" type="range" min="0.6" max="1.3" step="0.02" value="0.92"><label for="brightness">Hologram brightness</label><input id="brightness" type="range" min="0.6" max="1.3" step="0.05" value="1"><label class="check"><input id="motion" type="checkbox" checked> Ambient animation</label><label class="check"><input id="eye-motion" type="checkbox" checked> Blinking &amp; eye movement</label><label class="check"><input id="head-motion" type="checkbox" checked> Head movement &amp; expressions</label><div class="expression-previews" role="group" aria-label="Preview Joi’s expressions"><button type="button" data-joi-expression="warm">Warm</button><button type="button" data-joi-expression="curious">Curious</button><button type="button" data-joi-expression="playful">Playful</button></div><p id="expression-feedback" class="inline-help" role="status">Preview an expression, or tap Joi’s portrait. Enable ambient animation and head movement to see reactions.</p><label class="check"><input id="holographic-depth" type="checkbox" checked> Holographic depth</label><label class="check"><input id="mouth-motion" type="checkbox" checked> Mouth movement during speech</label><button class="primary" id="watch-demo" type="button">Try Joi speaking</button><p class="inline-help">Joi uses your selected reading voice. Device voice uses estimated timing for mouth movement.</p><p class="inline-help">Subtle portrait animation, independent of ChatGPT Voice. Turning off ambient animation also pauses her eyes, head gestures, light sweep, particles, and mouth movement.</p><div class="row"><button id="preview" class="primary">Preview voice</button><button id="voice">Voice test</button></div><label class="check"><input type="checkbox" id="keep-awake"> Keep screen awake while Joi is visible</label><p id="awake-status" role="status" class="inline-help">Off. Screen behavior follows your device settings.</p><label for="awareness-mode">Proactive prompts</label><select id="awareness-mode"><option value="all">Reminders + occasional conversation</option><option value="reminders">Task and appointment reminders only</option><option value="off">Off</option></select><button type="button" id="awareness-resume">Resume prompts now</button><p class="inline-help">Prompts appear while Joi is visible. Snoozing an item delays only that reminder.</p><div class="backup-row"><button id="download-backup" type="button">Download organizer backup</button><button id="restore-backup" type="button">Restore backup</button></div><input id="backup-import" type="file" accept="application/json,.json" hidden><p class="inline-help">Tasks, appointments, and notes are saved in this browser only. Clearing site data removes them. Restore merges backup items with existing items.</p><p class="hint">Preferences stay in this browser. Device voices vary; choose the voice you prefer. Your system’s reduced motion setting is respected.</p></dialog>
 <dialog id="setup-panel" aria-labelledby="setup-title"><div class="panel-head"><div><div class="eyebrow">ChatGPT companion</div><h1 id="setup-title">Voice behind the hologram</h1></div><button class="quiet close" data-close aria-label="Close voice setup">×</button></div><p>Use ChatGPT for conversation while this page displays Joi. This mode makes no OpenAI API calls. ChatGPT plan limits still apply.</p><ol class="setup-steps"><li><strong>Open the ChatGPT app.</strong> In Settings → Voice, enable <strong>Background conversations</strong>. The setting’s location can vary by app version.</li><li><strong>Start Voice in a chat.</strong> Tap the Voice icon and choose a voice you like. You can ask: “Call yourself Joi. Speak warmly and calmly, keep replies practical, and help me organize my day.”</li><li><strong>Return to this Joi page in Chrome.</strong> Keep the ChatGPT voice session running in the background. End the call from ChatGPT when you finish.</li></ol><div class="row"><a class="action primary" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT ↗</a><button id="setup-done">Show hologram</button></div><p id="setup-copy-message" role="status"></p><button class="quiet" id="copy-personality">Copy Joi’s conversation instructions</button><textarea id="personality-copy" aria-label="Joi conversation instructions to copy" readonly hidden></textarea><p class="hint">For both apps on screen, open Recent apps, tap an app’s icon, choose “Open in split screen view,” then select the other app if supported. Background mode uses the ChatGPT mobile app; the website link above is an alternative way to open ChatGPT.</p><p class="hint">The avatar’s ambient animation runs independently. This page cannot hear ChatGPT’s replies, detect its call status, or synchronize her mouth. The side panels work independently of ChatGPT Voice.</p></dialog>
 
 <dialog id="briefing-panel" aria-labelledby="briefing-title"><div class="panel-head"><div><div class="eyebrow">Your saved organizer</div><h1 id="briefing-title">A little direction.</h1></div><button type="button" class="quiet close" data-close aria-label="Close briefing">×</button></div><div class="segmented"><button type="button" id="brief-today" aria-pressed="true">Today</button><button type="button" id="brief-tomorrow" aria-pressed="false">Tomorrow</button></div><p id="briefing-summary"></p><section class="brief-section"><h2>Three tasks to consider</h2><ul class="brief-list" id="briefing-tasks"></ul></section><section class="brief-section"><h2>Appointments</h2><ul class="brief-list" id="briefing-appointments"></ul></section><div class="row"><button type="button" class="primary" id="hear-briefing">Hear briefing</button><button type="button" id="brief-capture">Add tasks</button></div><label class="check"><input type="checkbox" id="context-notes"> Include project notes in ChatGPT context</label><button type="button" id="prepare-context">Prepare ChatGPT context</button><p class="hint">Uses items saved in Joi. Review the context before copying it into ChatGPT. Calendar and Todoist stay separate.</p></dialog>
@@ -661,13 +662,19 @@ apply();state();clock();setInterval(clock,30000);loadVoices();if(synth)synth.add
     }
   }
   function schedule(delay){timer=setTimeout(()=>{timer=0;begin();},delay);}
-  function begin(){
+  function begin(kind='idle'){
     if(!allowed()){stop();return;}
     const inquisitive=Math.random()<.35;
-    const gesture={smile:random(.8,1.6),leftBrow:inquisitive?random(.8,1.25):random(.15,.45),rightBrow:inquisitive?random(.1,.3):random(.15,.45)};
-    const direction=Math.random()<.5?-1:1;
-    head.style.transform=`translateY(${random(-.6,.3).toFixed(2)}px) rotate(${(direction*random(.16,.28)).toFixed(3)}deg)`;
-    const start=performance.now(),rise=random(1700,2300),hold=random(1400,2400),fall=random(2300,3000);
+    const profiles={
+      warm:{smile:2.4,leftBrow:.35,rightBrow:.35,tilt:-.35,lift:-.35},
+      curious:{smile:.5,leftBrow:2.1,rightBrow:.25,tilt:.7,lift:-.3},
+      playful:{smile:3,leftBrow:.35,rightBrow:1.7,tilt:-.65,lift:-.5},
+      speaking:{smile:.55,leftBrow:.55,rightBrow:.45,tilt:-.2,lift:-.3}
+    };
+    const gesture=profiles[kind]||{smile:random(.8,1.6),leftBrow:inquisitive?random(.8,1.25):random(.15,.45),rightBrow:random(.15,.45),tilt:random(-.28,.28),lift:random(-.6,.3)};
+    head.dataset.expression=kind;
+    head.style.transform=`translateY(${gesture.lift}px) rotate(${gesture.tilt}deg)`;
+    const start=performance.now(),rise=kind==='idle'?random(1700,2300):850,hold=kind==='idle'?random(1400,2400):1600,fall=kind==='idle'?random(2300,3000):1500;
     lastFrame=-Infinity;
     function step(now){
       raf=0;
@@ -676,7 +683,7 @@ apply();state();clock();setInterval(clock,30000);loadVoices();if(synth)synth.add
       lastFrame=now;
       const elapsed=now-start;
       if(elapsed>=rise+hold+fall){
-        ctx.clearRect(0,0,canvas.width,canvas.height);head.style.transform='';schedule(random(6500,12500));return;
+        ctx.clearRect(0,0,canvas.width,canvas.height);head.style.transform='';head.dataset.expression='idle';schedule(random(6500,12500));return;
       }
       const amount=elapsed<rise?ease(elapsed/rise):elapsed<rise+hold?1:1-ease((elapsed-rise-hold)/fall);
       render(amount,gesture);
@@ -688,7 +695,7 @@ apply();state();clock();setInterval(clock,30000);loadVoices();if(synth)synth.add
   }
   function stop(){
     clearTimeout(timer);cancelAnimationFrame(raf);timer=raf=0;running=false;
-    head.classList.remove('gestures-active');head.style.transform='';
+    head.classList.remove('gestures-active');head.style.transform='';head.dataset.expression='idle';
     ctx.clearRect(0,0,canvas.width,canvas.height);
   }
   function sync(){
@@ -700,7 +707,39 @@ apply();state();clock();setInterval(clock,30000);loadVoices();if(synth)synth.add
   document.addEventListener('visibilitychange',sync);
   window.addEventListener('pagehide',stop);window.addEventListener('pageshow',sync);
   reduced.addEventListener('change',sync);
-  new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']});
+  let lastMode='standby',lastTouch=-Infinity;
+  function react(kind){
+    if(!allowed())return false;
+    stop();running=true;head.classList.add('gestures-active');begin(kind);return true;
+  }
+  function syncState(){
+    const mode=document.body.classList.contains('listening')?'listening':document.body.classList.contains('speaking')?'speaking':'standby';
+    if(!allowed()){lastMode=mode;sync();return;}
+    if(mode!==lastMode){
+      const previous=lastMode;lastMode=mode;
+      react(mode==='listening'?'curious':mode==='speaking'?'speaking':previous==='speaking'?'warm':'curious');
+    }else sync();
+  }
+  new MutationObserver(syncState).observe(document.body,{attributes:true,attributeFilter:['class']});
+  document.querySelectorAll('[data-joi-expression]').forEach(button=>button.addEventListener('click',()=>{
+    const feedback=document.getElementById('expression-feedback');
+    if(!allowed()){
+      feedback.textContent=reduced.matches?'Your device’s reduced motion setting pauses expressions.':!ready?'Portrait is still loading. Try again in a moment.':'Enable Ambient animation and Head movement & expressions first.';
+      return;
+    }
+    const kind=button.dataset.joiExpression;
+    document.getElementById('settings-panel').close();
+    react(kind);
+    feedback.textContent=kind[0].toUpperCase()+kind.slice(1)+' expression previewed.';
+  }));
+  document.addEventListener('pointerup',event=>{
+    if(event.isPrimary===false||event.button!==0||document.querySelector('dialog[open]'))return;
+    if(event.target.closest('button,a,input,select,textarea,.sidebar,header,.dock'))return;
+    const rect=head.getBoundingClientRect(),now=performance.now();
+    if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom||now-lastTouch<1500)return;
+    if(react('playful'))lastTouch=now;
+  });
+  document.addEventListener('joi-organizer-changed',()=>{if(lastMode==='standby')react('warm');});
   image.onload=()=>{try{patches.forEach(prepare);ready=true;sync();}catch{stop();toggle.checked=false;toggle.disabled=true;}};
   image.onerror=()=>{stop();toggle.checked=false;toggle.disabled=true;};
   image.src=new URL('./joi-clean.png',document.baseURI).href;
