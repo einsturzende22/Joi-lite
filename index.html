@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-joi-release="0.16">
+<html lang="en" data-joi-release="0.17">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -131,7 +131,7 @@ body.still .holo-sweep,body.still .holo-particle{animation:none!important;opacit
 <header><div class="brand"><span class="wordmark">JOI</span><small>YOUR PERSONAL COMPANION</small></div><div class="live" role="status"><span class="dot" aria-hidden="true"></span><span id="status">Standby</span></div><div class="clock"><time id="clock"></time><small id="date"></small></div></header>
 <div class="speech-stop"><small>Joi’s reading voice</small><button id="stop-avatar-speech" type="button">Stop voice</button></div><p class="notice" id="notice" role="status" hidden></p>
 <aside class="sidebar sidebar-left" id="left-widgets" aria-label="Daily organization">
-  <section class="widget"><div class="widget-head"><h2>Your next move</h2><span class="release-stamp">v0.16</span></div><div class="mission-actions"><button type="button" class="primary" id="open-briefing">Brief me</button><button type="button" id="open-capture">Capture tasks</button><button type="button" id="focus-mini">Focus timer</button></div><p class="meta">Your saved organizer · on this device</p></section>
+  <section class="widget"><div class="widget-head"><h2>Your next move</h2><span class="release-stamp">v0.17</span></div><div class="mission-actions"><button type="button" class="primary" id="open-briefing">Brief me</button><button type="button" id="open-capture">Capture tasks</button><button type="button" id="focus-mini">Focus timer</button></div><p class="meta">Your saved organizer · on this device</p></section>
 
   <section class="widget"><div class="widget-head"><h2>Today &amp; next</h2><button type="button" id="add-appointment" aria-label="Add an appointment">+</button></div><p class="meta" id="today-heading"></p><ul class="agenda-list" id="agenda-list"></ul><button class="small-link quiet" id="toggle-appointments" type="button">Show past appointments</button><a class="small-link" href="https://calendar.google.com/calendar/" target="_blank" rel="noopener noreferrer">Open Google Calendar ↗</a></section>
   <section class="widget"><div class="widget-head"><h2>Quick tasks <span id="task-count"></span></h2><button type="button" id="add-task" aria-label="Add a task">+</button></div><p class="meta">This tablet · separate from Todoist</p><ul class="task-list" id="task-list"></ul><button class="small-link quiet" id="toggle-completed" type="button">Show completed</button><a class="small-link" href="https://app.todoist.com/" target="_blank" rel="noopener noreferrer">Open Todoist ↗</a></section>
@@ -186,7 +186,7 @@ window.joiNeural.speak(clean).then(()=>{
 if(id!==speechId)return;speaking=false;state();$('message').textContent='Ready when you are.';
 }).catch(error=>{
 if(id!==speechId||error.name==='AbortError')return;
-speaking=false;state();document.dispatchEvent(new Event('joi-device-stop'));
+speaking=false;state();document.dispatchEvent(new Event('joi-device-stop'));window.joiNeural.reportError(error);
 $('message').textContent='Neural voice could not play. Try again, or choose Device voice in Settings.';notify('Neural voice could not play. Try Device voice in Settings.');
 });
 }
@@ -200,7 +200,7 @@ $('stop-avatar-speech').onclick=()=>stop();
 $('voice').onclick=()=>{close($('settings-panel'));open('voice-panel');};$('voice-setup').onclick=()=>{close($('settings-panel'));open('setup-panel');};$('setup-done').onclick=()=>close($('setup-panel'));$('settings').onclick=()=>open('settings-panel');
 document.querySelectorAll('dialog').forEach(d=>{d.querySelector('[data-close]').onclick=()=>close(d);d.addEventListener('cancel',stop);d.addEventListener('close',stop);});
 $('speak').onclick=()=>{const text=$('words').value.trim();if(!text){$('message').textContent='Type a phrase first, or try Joi’s greeting.';$('words').focus();return;}say(text);};
-$('greeting').onclick=()=>{$('words').value=greeting;say(greeting);};$('preview').onclick=()=>say('Hello, Adam. I’m Joi. Take a breath. What shall we make happen today?');$('stop').onclick=()=>{stop();$('message').textContent='Stopped.';};
+$('greeting').onclick=()=>{$('words').value=greeting;say(greeting);};$('preview').onclick=()=>say('Hello, Adam. I’m here.');$('stop').onclick=()=>{stop();$('message').textContent='Stopped.';};
 $('listen').onclick=()=>{const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){$('message').textContent='Dictation is unavailable in this browser. Type your words instead.';return;}stop();const r=new SR();recognition=r;r.lang='en-US';r.continuous=false;r.interimResults=false;let gotResult=false,failed=false;r.onstart=()=>{if(recognition!==r)return;state();$('message').textContent='Listening… Speak a short phrase.';};r.onresult=e=>{if(recognition!==r)return;gotResult=true;$('words').value=e.results[0][0].transcript;$('message').textContent='Captured. Tap Speak to hear it read aloud.';};r.onerror=e=>{if(recognition!==r)return;failed=true;const errors={'not-allowed':'Microphone permission was denied. Allow it in your browser’s site settings, or type instead.','audio-capture':'No microphone is available. Type your words instead.','no-speech':'No speech heard. Try again when you’re ready.','network':'Dictation could not reach the speech service. Check your connection or type instead.'};$('message').textContent=errors[e.error]||'Dictation stopped. Try again or type your words.';};r.onend=()=>{if(recognition!==r)return;recognition=null;state();if(!gotResult&&!failed)$('message').textContent='Listening ended. Tap Listen to try again.';};try{r.start();state();$('message').textContent='Starting microphone…';}catch{recognition=null;state();$('message').textContent='Could not start dictation. Try again or type instead.';}};
 function loadVoices(){if(!synth)return;const select=$('voice-choice');select.replaceChildren(new Option('Device default',''));for(const v of synth.getVoices()){select.add(new Option(v.name+' · '+v.lang,v.voiceURI));}select.value=prefs.voice;if(select.selectedIndex<0)select.value='';}
 $('joi-style').value=prefs.style;$('joi-style').onchange=e=>{prefs.style=e.target.value;save();};$('voice-choice').onchange=e=>{prefs.voice=e.target.value;save();};$('rate').value=prefs.rate;$('joi-pitch').value=prefs.pitch;$('joi-pitch').oninput=e=>{prefs.pitch=Number(e.target.value);apply();save();};$('brightness').value=prefs.brightness;$('motion').checked=prefs.motion;
@@ -1010,6 +1010,7 @@ self.onmessage=async event=>{
     dtype:'q8',device:'wasm',progress_callback:progress=>{
      if(progress.status==='progress'&&Number.isFinite(progress.progress))self.postMessage({type:'progress',percent:Math.round(progress.progress),file:progress.file});
      else if(progress.status==='initiate')self.postMessage({type:'progress',file:progress.file});
+     else if(progress.status==='done')self.postMessage({type:'progress',stage:'initializing'});
     }
    });
    self.postMessage({id,type:'ready'});return;
@@ -1035,8 +1036,15 @@ function syncControls(){
 engine.value=prefs.engine;voice.value=prefs.neuralVoice;
 el('voice-choice').disabled=prefs.engine==='neural';el('joi-pitch').disabled=prefs.engine==='neural';
 enable.textContent=ready?'Neural voice ready':loading?'Loading voice…':'Download & enable neural voice';enable.disabled=Boolean(loading);
+el('neural-preview').disabled=Boolean(loading);el('preview').disabled=Boolean(loading);el('watch-demo').disabled=Boolean(loading);
 }
 function update(text){status.textContent=text;}
+function reportError(error){
+const detail=String(error?.message||'Unknown voice error.').slice(0,700);
+update(`Neural voice failed: ${detail} You can retry or select Device voice.`);
+console.error('Joi neural voice:',detail);
+}
+
 function resetWorker(reason=abortError()){
 if(worker)worker.terminate();worker=null;ready=false;loading=null;generating=false;
 if(workerURL)URL.revokeObjectURL(workerURL);workerURL='';
@@ -1060,13 +1068,14 @@ worker.onmessage=event=>{
 if(worker!==instance)return;
 const result=event.data;
 if(result.type==='progress'){
+if(result.stage==='initializing'){update('Voice file downloaded. Starting the model on this device; this can take a few minutes.');return;}
 const label=result.file?.endsWith('.onnx')?'Voice model':'Voice files';
 update(`${label}${Number.isFinite(result.percent)?` · ${result.percent}%`:''}. First setup can take a few minutes.`);return;
 }
 const task=pending.get(result.id);if(!task)return;pending.delete(result.id);clearTimeout(task.timeout);
 if(result.type==='error')task.reject(new Error(result.message));else task.resolve(result);
 };
-worker.onerror=()=>{if(worker!==instance)return;resetWorker(new Error('Neural voice could not load. Check your connection, then try again.'));update('Neural voice could not load. Device voice is still available.');};
+worker.onerror=event=>{if(worker!==instance)return;const error=new Error(event.message||'The voice worker could not start. Check your connection and browser support.');resetWorker(error);reportError(error);};
 loading=request('init').then(()=>{if(worker!==instance)throw abortError();ready=true;loading=null;update('Neural voice ready. Choose a voice and tap Preview voice.');syncControls();}).catch(error=>{if(worker===instance)resetWorker(error);throw error;});
 syncControls();return loading;
 }
@@ -1120,12 +1129,12 @@ let offset=0;for(const chunk of chunks){samples.set(chunk.samples,offset);offset
 update('Neural voice · speaking.');el('status').textContent='Speaking';await play(samples,sampleRate,token);
 update('Neural voice ready.');
 }
-window.joiNeural={prepare,speak,cancel};
+window.joiNeural={prepare,speak,cancel,reportError};
 engine.onchange=()=>{stop();el('settings-panel').querySelector('.dialog-feedback')?.remove();prefs.engine=engine.value;save();syncControls();update(prefs.engine==='neural'?(ready?'Neural voice ready.':'Tap Download & enable neural voice, or Preview voice to load it.'):'Using your device voice.');};
 voice.onchange=()=>{stop();prefs.neuralVoice=voice.value;save();update('Voice selected. Tap Preview voice to compare.');};
 enable.onclick=async()=>{
 try{stop();await unlock();await prepare();prefs.engine='neural';save();syncControls();notify('Neural voice enabled. Tap Preview voice to hear Joi.');}
-catch(error){if(error.name==='AbortError')return;update('Could not enable neural voice. Check your connection or try again. Device voice is available.');notify('Neural voice could not load. You can keep using Device voice.');}
+catch(error){if(error.name==='AbortError')return;reportError(error);notify('Neural voice could not load. You can keep using Device voice.');}
 };
 el('neural-preview').onclick=()=>{prefs.engine='neural';save();syncControls();say('Hello, Adam. I’m Joi. Take a breath. What shall we make happen today?');};
 el('neural-cancel').onclick=()=>{stop();cancel();update('Voice loading or playback stopped.');};
