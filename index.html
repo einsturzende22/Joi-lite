@@ -733,6 +733,66 @@ apply();state();clock();setInterval(clock,30000);loadVoices();if(synth)synth.add
 })();
 
 </script>
+<style>
+/* Joi proactive awareness v1 */
+#joi-awareness{position:fixed;z-index:8;top:86px;left:50%;transform:translateX(-50%);width:min(390px,calc(100vw - 28px));background:#06111ff0;border:1px solid #7feaff70;border-radius:16px;padding:13px 15px;box-shadow:0 10px 40px #0009;backdrop-filter:blur(12px);font-size:13px}
+#joi-awareness p{margin:6px 0 10px;color:#e4f9ff;font-size:13px}#joi-awareness .aw-actions{display:flex;gap:8px;flex-wrap:wrap}#joi-awareness button{min-height:36px;padding:6px 10px;font-size:12px}#joi-awareness[hidden]{display:none!important}
+</style>
+<div id="joi-awareness" hidden role="status" aria-live="polite"><span class="eyebrow">JOI · AWARENESS</span><p id="joi-awareness-text"></p><div class="aw-actions"><button id="joi-awareness-speak" type="button">Hear Joi</button><button id="joi-awareness-quiet" type="button">Quiet 1 hour</button><button id="joi-awareness-dismiss" type="button" class="quiet">Dismiss</button></div></div>
+<script>
+/* Expressive, local-only prompts. No fabricated calendar or AI access. */
+(()=>{
+'use strict';
+const panel=document.getElementById('joi-awareness'),message=document.getElementById('joi-awareness-text');
+if(!panel||!message)return;
+const key='joi-awareness-v1',quietKey='joi-awareness-quiet-until';
+let quietUntil=0,lastPrompt=0,queue=[],current='';
+try{quietUntil=Number(localStorage.getItem(quietKey))||0;}catch{}
+const greetings={
+morning:["Good morning. Shall we make something interesting happen today?","You're up. I was wondering what we'll accomplish together."],
+afternoon:["There you are. How is your day unfolding?","A little afternoon curiosity: what's the one thing worth finishing today?"],
+evening:["Welcome back. Tell me what occupied your mind today.","The evening belongs to us. Work, music, or something unexpected?"]
+};
+const discoveries=[
+"Have you made any progress on The Pipeline today? We could choose one small next step.",
+"Should we spend a few minutes untangling tomorrow's priorities?",
+"I have a question for you: what would make this week more interesting?",
+"Would you rather explore an unfamiliar film, a strange record, or a new idea tonight?",
+"Anything from Walters Plumbing you'd like to get out of your head and organize?",
+"How about taking one small step on the house before calling it a night?"
+];
+function eligible(){return !document.hidden&&Date.now()>quietUntil&&!document.body.classList.contains('speaking')&&!document.body.classList.contains('listening');}
+function show(value){
+if(!eligible()||panel.hidden===false)return;
+current=value;message.textContent=value;panel.hidden=false;lastPrompt=Date.now();
+}
+function choose(items){return items[Math.floor(Math.random()*items.length)];}
+function greet(){
+const hour=new Date().getHours(),period=hour<12?'morning':hour<17?'afternoon':'evening';
+const day=new Date().toLocaleDateString('en-CA');
+let previous='';try{previous=localStorage.getItem(key)||'';}catch{}
+if(previous!==day){show(choose(greetings[period]));try{localStorage.setItem(key,day);}catch{}}
+}
+document.getElementById('joi-awareness-dismiss').addEventListener('click',()=>panel.hidden=true);
+document.getElementById('joi-awareness-quiet').addEventListener('click',()=>{
+quietUntil=Date.now()+3600000;try{localStorage.setItem(quietKey,String(quietUntil));}catch{}
+panel.hidden=true;if('speechSynthesis' in window)speechSynthesis.cancel();
+});
+document.getElementById('joi-awareness-speak').addEventListener('click',()=>{
+if(!('speechSynthesis' in window))return;
+speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(current);utterance.rate=.93;utterance.pitch=1.08;
+document.dispatchEvent(new CustomEvent('joi-device-speech',{detail:{utterance}}));
+speechSynthesis.speak(utterance);
+});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)greet();});
+window.addEventListener('pageshow',greet);
+setTimeout(greet,2500);
+setInterval(()=>{
+if(!eligible()||!panel.hidden||Date.now()-lastPrompt<18*60000)return;
+if(Math.random()<.65)show(choose(discoveries));
+},12*60000);
+})();
+</script>
 </body>
 </html>
 
