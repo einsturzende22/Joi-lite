@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-joi-release="0.17">
+<html lang="en" data-joi-release="0.18">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -131,7 +131,7 @@ body.still .holo-sweep,body.still .holo-particle{animation:none!important;opacit
 <header><div class="brand"><span class="wordmark">JOI</span><small>YOUR PERSONAL COMPANION</small></div><div class="live" role="status"><span class="dot" aria-hidden="true"></span><span id="status">Standby</span></div><div class="clock"><time id="clock"></time><small id="date"></small></div></header>
 <div class="speech-stop"><small>Joi’s reading voice</small><button id="stop-avatar-speech" type="button">Stop voice</button></div><p class="notice" id="notice" role="status" hidden></p>
 <aside class="sidebar sidebar-left" id="left-widgets" aria-label="Daily organization">
-  <section class="widget"><div class="widget-head"><h2>Your next move</h2><span class="release-stamp">v0.17</span></div><div class="mission-actions"><button type="button" class="primary" id="open-briefing">Brief me</button><button type="button" id="open-capture">Capture tasks</button><button type="button" id="focus-mini">Focus timer</button></div><p class="meta">Your saved organizer · on this device</p></section>
+  <section class="widget"><div class="widget-head"><h2>Your next move</h2><span class="release-stamp">v0.18</span></div><div class="mission-actions"><button type="button" class="primary" id="open-briefing">Brief me</button><button type="button" id="open-capture">Capture tasks</button><button type="button" id="focus-mini">Focus timer</button></div><p class="meta">Your saved organizer · on this device</p></section>
 
   <section class="widget"><div class="widget-head"><h2>Today &amp; next</h2><button type="button" id="add-appointment" aria-label="Add an appointment">+</button></div><p class="meta" id="today-heading"></p><ul class="agenda-list" id="agenda-list"></ul><button class="small-link quiet" id="toggle-appointments" type="button">Show past appointments</button><a class="small-link" href="https://calendar.google.com/calendar/" target="_blank" rel="noopener noreferrer">Open Google Calendar ↗</a></section>
   <section class="widget"><div class="widget-head"><h2>Quick tasks <span id="task-count"></span></h2><button type="button" id="add-task" aria-label="Add a task">+</button></div><p class="meta">This tablet · separate from Todoist</p><ul class="task-list" id="task-list"></ul><button class="small-link quiet" id="toggle-completed" type="button">Show completed</button><a class="small-link" href="https://app.todoist.com/" target="_blank" rel="noopener noreferrer">Open Todoist ↗</a></section>
@@ -149,7 +149,7 @@ body.still .holo-sweep,body.still .holo-particle{animation:none!important;opacit
 
 <nav class="dock" aria-label="Joi controls"><div class="visualizer" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><button class="quiet utility-toggle" type="button" id="toggle-left" aria-controls="left-widgets" aria-expanded="false">Today / tasks</button><button class="quiet" id="focus-view" type="button" aria-pressed="false">Focus view</button><button class="quiet utility-toggle" type="button" id="toggle-right" aria-controls="right-widgets" aria-expanded="false">Menus</button><a class="action primary" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT ↗</a><button class="quiet" id="settings">Settings</button><button class="quiet" id="fullscreen">Full screen</button></nav>
 <dialog id="voice-panel" aria-labelledby="voice-title"><div class="panel-head"><div><div class="eyebrow">Voice console</div><h1 id="voice-title">I'm here.</h1></div><button class="quiet close" data-close aria-label="Close voice console">×</button></div><p>Type something for Joi to read aloud, or dictate it with your microphone. Open ChatGPT for AI conversation.</p><label for="words">Words for Joi</label><textarea id="words" maxlength="4000" placeholder="Good evening. What shall we explore?"></textarea><div class="row"><button id="listen">Listen</button><button class="primary" id="speak">Speak</button><button id="stop" disabled>Stop</button></div><p id="message" role="status">Ready when you are.</p><button class="primary" id="watch-words" type="button">Watch Joi read this</button><button class="quiet" id="greeting">Try Joi’s greeting</button><p class="hint">This console reads text; it does not generate AI answers. Microphone recognition may use your browser’s online speech service. Use the side panels for tasks, appointments, notes, and app shortcuts.</p></dialog>
-<dialog id="settings-panel" aria-labelledby="settings-title"><div class="panel-head"><div><div class="eyebrow">Make yourself comfortable</div><h1 id="settings-title">Console settings</h1></div><button class="quiet close" data-close aria-label="Close settings">×</button></div><button class="primary" id="voice-setup" type="button">ChatGPT Voice setup guide</button><p class="inline-help">ChatGPT provides your conversation. The reading voice below speaks Joi’s reminders, briefings, and typed text.</p><label for="speech-engine">Joi’s reading voice</label><select id="speech-engine"><option value="device">Device voice · instant</option><option value="neural">Neural voice · free local model</option></select><div class="neural-card"><label for="neural-voice">Neural voice</label><select id="neural-voice"><option value="af_heart">Heart · American English</option><option value="af_bella">Bella · American English</option><option value="af_nicole">Nicole · American English</option></select><div class="row"><button type="button" id="enable-neural" class="primary">Download &amp; enable neural voice</button><button type="button" id="neural-cancel">Cancel / stop</button></div><button type="button" id="neural-preview" class="primary">Preview neural voice</button><p class="inline-help">First setup downloads about 100–130 MB. Use Wi-Fi and keep Joi open while it loads.</p><p id="neural-status" role="status" class="inline-help">Neural voice has not loaded yet.</p><p class="inline-help">Kokoro runs locally after loading; there is no per-use API fee. Your browser may cache files but can clear them. Generation can take several seconds or longer on a tablet. These English voices have their own accents; this does not copy ChatGPT Voice.</p><a class="small-link" href="https://github.com/hexgrad/kokoro" target="_blank" rel="noopener noreferrer">Kokoro · Apache-2.0 ↗</a></div><label for="voice-choice">Device voice</label><select id="voice-choice"><option value="">Device default</option></select><label for="joi-style">Speaking style</label><select id="joi-style"><option value="intimate">Intimate</option><option value="natural">Natural</option><option value="playful">Playful</option></select><label for="joi-pitch">Device voice pitch <output id="joi-pitch-value">1.04×</output></label><input id="joi-pitch" type="range" min="0.85" max="1.2" step="0.01" value="1.04"><label for="rate">Speaking pace <output id="rate-value">0.92×</output></label><input id="rate" type="range" min="0.6" max="1.3" step="0.02" value="0.92"><label for="brightness">Hologram brightness</label><input id="brightness" type="range" min="0.6" max="1.3" step="0.05" value="1"><label class="check"><input id="motion" type="checkbox" checked> Ambient animation</label><label class="check"><input id="eye-motion" type="checkbox" checked> Blinking &amp; eye movement</label><label class="check"><input id="head-motion" type="checkbox" checked> Head movement &amp; expressions</label><label class="check"><input id="holographic-depth" type="checkbox" checked> Holographic depth</label><label class="check"><input id="mouth-motion" type="checkbox" checked> Mouth movement during speech</label><button class="primary" id="watch-demo" type="button">Try Joi speaking</button><p class="inline-help">Joi uses your selected reading voice. Neural playback animates her mouth from the audio volume; device voice uses estimated timing.</p><p class="inline-help">Subtle portrait animation, independent of ChatGPT Voice. Turning off ambient animation also pauses her eyes, head gestures, light sweep, particles, and mouth movement.</p><div class="row"><button id="preview" class="primary">Preview voice</button><button id="voice">Voice test</button></div><label class="check"><input type="checkbox" id="keep-awake"> Keep screen awake while Joi is visible</label><p id="awake-status" role="status" class="inline-help">Off. Screen behavior follows your device settings.</p><label for="awareness-mode">Proactive prompts</label><select id="awareness-mode"><option value="all">Reminders + occasional conversation</option><option value="reminders">Task and appointment reminders only</option><option value="off">Off</option></select><button type="button" id="awareness-resume">Resume prompts now</button><p class="inline-help">Prompts appear while Joi is visible. Snoozing an item delays only that reminder.</p><div class="backup-row"><button id="download-backup" type="button">Download organizer backup</button><button id="restore-backup" type="button">Restore backup</button></div><input id="backup-import" type="file" accept="application/json,.json" hidden><p class="inline-help">Tasks, appointments, and notes are saved in this browser only. Clearing site data removes them. Restore merges backup items with existing items.</p><p class="hint">Preferences stay in this browser. Device voices vary; choose the voice you prefer. Your system’s reduced motion setting is respected.</p></dialog>
+<dialog id="settings-panel" aria-labelledby="settings-title"><div class="panel-head"><div><div class="eyebrow">Make yourself comfortable</div><h1 id="settings-title">Console settings</h1></div><button class="quiet close" data-close aria-label="Close settings">×</button></div><button class="primary" id="voice-setup" type="button">ChatGPT Voice setup guide</button><p class="inline-help">ChatGPT provides your conversation. The reading voice below speaks Joi’s reminders, briefings, and typed text.</p><label for="speech-engine">Joi’s reading voice</label><select id="speech-engine"><option value="device">Device voice · instant</option><option value="neural" disabled>Neural voice · paused for stability</option></select><div class="neural-card"><p class="inline-help">Device voice restored. Local neural voice is paused while we investigate tablet crashes. Your speaking style, pitch, pace, and organizer are preserved.</p></div><label for="voice-choice">Device voice</label><select id="voice-choice"><option value="">Device default</option></select><label for="joi-style">Speaking style</label><select id="joi-style"><option value="intimate">Intimate</option><option value="natural">Natural</option><option value="playful">Playful</option></select><label for="joi-pitch">Device voice pitch <output id="joi-pitch-value">1.04×</output></label><input id="joi-pitch" type="range" min="0.85" max="1.2" step="0.01" value="1.04"><label for="rate">Speaking pace <output id="rate-value">0.92×</output></label><input id="rate" type="range" min="0.6" max="1.3" step="0.02" value="0.92"><label for="brightness">Hologram brightness</label><input id="brightness" type="range" min="0.6" max="1.3" step="0.05" value="1"><label class="check"><input id="motion" type="checkbox" checked> Ambient animation</label><label class="check"><input id="eye-motion" type="checkbox" checked> Blinking &amp; eye movement</label><label class="check"><input id="head-motion" type="checkbox" checked> Head movement &amp; expressions</label><label class="check"><input id="holographic-depth" type="checkbox" checked> Holographic depth</label><label class="check"><input id="mouth-motion" type="checkbox" checked> Mouth movement during speech</label><button class="primary" id="watch-demo" type="button">Try Joi speaking</button><p class="inline-help">Joi uses your selected reading voice. Device voice uses estimated timing for mouth movement.</p><p class="inline-help">Subtle portrait animation, independent of ChatGPT Voice. Turning off ambient animation also pauses her eyes, head gestures, light sweep, particles, and mouth movement.</p><div class="row"><button id="preview" class="primary">Preview voice</button><button id="voice">Voice test</button></div><label class="check"><input type="checkbox" id="keep-awake"> Keep screen awake while Joi is visible</label><p id="awake-status" role="status" class="inline-help">Off. Screen behavior follows your device settings.</p><label for="awareness-mode">Proactive prompts</label><select id="awareness-mode"><option value="all">Reminders + occasional conversation</option><option value="reminders">Task and appointment reminders only</option><option value="off">Off</option></select><button type="button" id="awareness-resume">Resume prompts now</button><p class="inline-help">Prompts appear while Joi is visible. Snoozing an item delays only that reminder.</p><div class="backup-row"><button id="download-backup" type="button">Download organizer backup</button><button id="restore-backup" type="button">Restore backup</button></div><input id="backup-import" type="file" accept="application/json,.json" hidden><p class="inline-help">Tasks, appointments, and notes are saved in this browser only. Clearing site data removes them. Restore merges backup items with existing items.</p><p class="hint">Preferences stay in this browser. Device voices vary; choose the voice you prefer. Your system’s reduced motion setting is respected.</p></dialog>
 <dialog id="setup-panel" aria-labelledby="setup-title"><div class="panel-head"><div><div class="eyebrow">ChatGPT companion</div><h1 id="setup-title">Voice behind the hologram</h1></div><button class="quiet close" data-close aria-label="Close voice setup">×</button></div><p>Use ChatGPT for conversation while this page displays Joi. This mode makes no OpenAI API calls. ChatGPT plan limits still apply.</p><ol class="setup-steps"><li><strong>Open the ChatGPT app.</strong> In Settings → Voice, enable <strong>Background conversations</strong>. The setting’s location can vary by app version.</li><li><strong>Start Voice in a chat.</strong> Tap the Voice icon and choose a voice you like. You can ask: “Call yourself Joi. Speak warmly and calmly, keep replies practical, and help me organize my day.”</li><li><strong>Return to this Joi page in Chrome.</strong> Keep the ChatGPT voice session running in the background. End the call from ChatGPT when you finish.</li></ol><div class="row"><a class="action primary" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT ↗</a><button id="setup-done">Show hologram</button></div><p id="setup-copy-message" role="status"></p><button class="quiet" id="copy-personality">Copy Joi’s conversation instructions</button><textarea id="personality-copy" aria-label="Joi conversation instructions to copy" readonly hidden></textarea><p class="hint">For both apps on screen, open Recent apps, tap an app’s icon, choose “Open in split screen view,” then select the other app if supported. Background mode uses the ChatGPT mobile app; the website link above is an alternative way to open ChatGPT.</p><p class="hint">The avatar’s ambient animation runs independently. This page cannot hear ChatGPT’s replies, detect its call status, or synchronize her mouth. The side panels work independently of ChatGPT Voice.</p></dialog>
 
 <dialog id="briefing-panel" aria-labelledby="briefing-title"><div class="panel-head"><div><div class="eyebrow">Your saved organizer</div><h1 id="briefing-title">A little direction.</h1></div><button type="button" class="quiet close" data-close aria-label="Close briefing">×</button></div><div class="segmented"><button type="button" id="brief-today" aria-pressed="true">Today</button><button type="button" id="brief-tomorrow" aria-pressed="false">Tomorrow</button></div><p id="briefing-summary"></p><section class="brief-section"><h2>Three tasks to consider</h2><ul class="brief-list" id="briefing-tasks"></ul></section><section class="brief-section"><h2>Appointments</h2><ul class="brief-list" id="briefing-appointments"></ul></section><div class="row"><button type="button" class="primary" id="hear-briefing">Hear briefing</button><button type="button" id="brief-capture">Add tasks</button></div><label class="check"><input type="checkbox" id="context-notes"> Include project notes in ChatGPT context</label><button type="button" id="prepare-context">Prepare ChatGPT context</button><p class="hint">Uses items saved in Joi. Review the context before copying it into ChatGPT. Calendar and Todoist stay separate.</p></dialog>
@@ -161,12 +161,15 @@ body.still .holo-sweep,body.still .holo-particle{animation:none!important;opacit
 const $=id=>document.getElementById(id),synth=window.speechSynthesis;
 const prefs={engine:'device',neuralVoice:'af_heart',voice:'',rate:.92,pitch:1.04,style:'intimate',brightness:1,motion:true};
 try{const saved=JSON.parse(localStorage.getItem('joi-console-settings')||'{}');if(['device','neural'].includes(saved.engine))prefs.engine=saved.engine;if(['af_heart','af_bella','af_nicole'].includes(saved.neuralVoice))prefs.neuralVoice=saved.neuralVoice;if(typeof saved.voice==='string')prefs.voice=saved.voice;if(['intimate','natural','playful'].includes(saved.style))prefs.style=saved.style;if(Number.isFinite(saved.rate))prefs.rate=Math.min(1.3,Math.max(.6,saved.rate));if(Number.isFinite(saved.pitch))prefs.pitch=Math.min(1.2,Math.max(.85,saved.pitch));if(Number.isFinite(saved.brightness))prefs.brightness=Math.min(1.3,Math.max(.6,saved.brightness));if(typeof saved.motion==='boolean')prefs.motion=saved.motion;}catch{}
+// Recovery migration: never load the local model, even with a saved neural selection.
+prefs.engine='device';
+save();
 let recognition=null,speaking=false,utterance=null,speechId=0,toastTimer,speechPauseTimer=null;
 function save(){try{localStorage.setItem('joi-console-settings',JSON.stringify(prefs));}catch{}}
 function apply(){document.body.classList.toggle('still',!prefs.motion);document.documentElement.style.setProperty('--brightness',prefs.brightness);$('rate-value').textContent=prefs.rate.toFixed(2)+'×';$('joi-pitch-value').textContent=prefs.pitch.toFixed(2)+'×';}
 function state(){const mode=recognition?'listening':speaking?'speaking':'standby';document.body.classList.toggle('listening',mode==='listening');document.body.classList.toggle('speaking',mode==='speaking');$('status').textContent=mode==='standby'?'Display ready':mode[0].toUpperCase()+mode.slice(1);$('stop').disabled=mode==='standby';$('listen').disabled=Boolean(recognition);$('speak').disabled=Boolean(recognition);}
 function notify(text){$('notice').textContent=text;$('notice').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('notice').hidden=true,5000);}
-function stop(){window.joiNeural?.cancel();if(speechPauseTimer!==null){clearTimeout(speechPauseTimer);speechPauseTimer=null;}document.dispatchEvent(new Event('joi-device-stop'));speechId++;if(recognition){const old=recognition;recognition=null;old.abort();}if(synth)synth.cancel();utterance=null;speaking=false;state();}
+function stop(){if(speechPauseTimer!==null){clearTimeout(speechPauseTimer);speechPauseTimer=null;}document.dispatchEvent(new Event('joi-device-stop'));speechId++;if(recognition){const old=recognition;recognition=null;old.abort();}if(synth)synth.cancel();utterance=null;speaking=false;state();}
 function joiSpeechPhrases(text){
 const clean=String(text).replace(/\r\n?/g,'\n').trim();if(!clean)return [];
 // Sentence segmentation preserves decimals, abbreviations, and punctuation.
@@ -178,17 +181,8 @@ for(const sentence of sentences){let rest=sentence.trim();while(rest.length>240)
 return phrases;
 }
 function say(text){
-if(prefs.engine!=='neural'||!window.joiNeural){deviceSay(text);return;}
 const clean=String(text).trim();if(!clean)return;
-if(clean.length>4000){notify('For neural voice, use a passage under 4,000 characters. Device voice can read this full passage.');return;}
-stop();const id=speechId;speaking=true;state();$('status').textContent='Preparing voice…';$('message').textContent='Preparing Joi’s neural voice…';
-window.joiNeural.speak(clean).then(()=>{
-if(id!==speechId)return;speaking=false;state();$('message').textContent='Ready when you are.';
-}).catch(error=>{
-if(id!==speechId||error.name==='AbortError')return;
-speaking=false;state();document.dispatchEvent(new Event('joi-device-stop'));window.joiNeural.reportError(error);
-$('message').textContent='Neural voice could not play. Try again, or choose Device voice in Settings.';notify('Neural voice could not play. Try Device voice in Settings.');
-});
+deviceSay(clean);
 }
 function deviceSay(text){if(!synth||!window.SpeechSynthesisUtterance){$('message').textContent='Speech output is unavailable in this browser.';notify('Speech output is unavailable in this browser.');return;}stop();const id=speechId;const phrases=joiSpeechPhrases(text);let phraseIndex=0;const u=new SpeechSynthesisUtterance(phrases[0]||text);utterance=u;function sayRemaining(i){if(id!==speechId)return;const next=new SpeechSynthesisUtterance(phrases[i]);next.rate=u.rate;next.pitch=u.pitch;next.voice=u.voice;next.lang=u.lang;utterance=next;next.onstart=u.onstart;next.onend=u.onend;next.onerror=u.onerror;document.dispatchEvent(new CustomEvent('joi-device-speech',{detail:{utterance:next}}));synth.speak(next);}const profile={intimate:[.94,.99],natural:[1,1],playful:[1.06,1.035]}[prefs.style]||[1,1];u.rate=Math.min(1.3,prefs.rate*profile[0]);u.pitch=Math.min(1.2,prefs.pitch*profile[1]);const chosen=synth.getVoices().find(v=>v.voiceURI===prefs.voice);if(chosen){u.voice=chosen;u.lang=chosen.lang;}else{u.lang='en-US';}u.onstart=()=>{if(id!==speechId)return;speaking=true;state();$('message').textContent='Joi is speaking…';};u.onend=()=>{if(id!==speechId)return;if(++phraseIndex<phrases.length){const delay=prefs.style==='intimate'?220:prefs.style==='playful'?110:150;speechPauseTimer=setTimeout(()=>{speechPauseTimer=null;if(id!==speechId)return;sayRemaining(phraseIndex);},delay);return;}utterance=null;speaking=false;state();$('message').textContent='Ready when you are.';};u.onerror=e=>{if(id!==speechId)return;utterance=null;speaking=false;state();$('message').textContent=e.error==='interrupted'?'Stopped.':'Speech could not play. Try another device voice.';if(e.error!=='interrupted')notify('Device voice could not play. In Settings, try another voice.');};document.dispatchEvent(new CustomEvent('joi-device-speech',{detail:{utterance:u}}));try{synth.speak(u);}catch{document.dispatchEvent(new Event('joi-device-stop'));utterance=null;speaking=false;state();notify('Device voice could not start. Try another voice in Settings.');}}
 const greeting='Good evening. I’m Joi. Take a breath. We can make a little room for what matters. What would you like to explore?';
@@ -203,6 +197,7 @@ $('speak').onclick=()=>{const text=$('words').value.trim();if(!text){$('message'
 $('greeting').onclick=()=>{$('words').value=greeting;say(greeting);};$('preview').onclick=()=>say('Hello, Adam. I’m here.');$('stop').onclick=()=>{stop();$('message').textContent='Stopped.';};
 $('listen').onclick=()=>{const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){$('message').textContent='Dictation is unavailable in this browser. Type your words instead.';return;}stop();const r=new SR();recognition=r;r.lang='en-US';r.continuous=false;r.interimResults=false;let gotResult=false,failed=false;r.onstart=()=>{if(recognition!==r)return;state();$('message').textContent='Listening… Speak a short phrase.';};r.onresult=e=>{if(recognition!==r)return;gotResult=true;$('words').value=e.results[0][0].transcript;$('message').textContent='Captured. Tap Speak to hear it read aloud.';};r.onerror=e=>{if(recognition!==r)return;failed=true;const errors={'not-allowed':'Microphone permission was denied. Allow it in your browser’s site settings, or type instead.','audio-capture':'No microphone is available. Type your words instead.','no-speech':'No speech heard. Try again when you’re ready.','network':'Dictation could not reach the speech service. Check your connection or type instead.'};$('message').textContent=errors[e.error]||'Dictation stopped. Try again or type your words.';};r.onend=()=>{if(recognition!==r)return;recognition=null;state();if(!gotResult&&!failed)$('message').textContent='Listening ended. Tap Listen to try again.';};try{r.start();state();$('message').textContent='Starting microphone…';}catch{recognition=null;state();$('message').textContent='Could not start dictation. Try again or type instead.';}};
 function loadVoices(){if(!synth)return;const select=$('voice-choice');select.replaceChildren(new Option('Device default',''));for(const v of synth.getVoices()){select.add(new Option(v.name+' · '+v.lang,v.voiceURI));}select.value=prefs.voice;if(select.selectedIndex<0)select.value='';}
+$('speech-engine').value='device';$('speech-engine').disabled=true;
 $('joi-style').value=prefs.style;$('joi-style').onchange=e=>{prefs.style=e.target.value;save();};$('voice-choice').onchange=e=>{prefs.voice=e.target.value;save();};$('rate').value=prefs.rate;$('joi-pitch').value=prefs.pitch;$('joi-pitch').oninput=e=>{prefs.pitch=Number(e.target.value);apply();save();};$('brightness').value=prefs.brightness;$('motion').checked=prefs.motion;
 $('rate').oninput=e=>{prefs.rate=Number(e.target.value);apply();save();};$('brightness').oninput=e=>{prefs.brightness=Number(e.target.value);apply();save();};$('motion').onchange=e=>{prefs.motion=e.target.checked;apply();save();};
 $('fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();else notify('Full screen is unavailable in this browser.');}catch{notify('Full screen could not start. Try your browser’s full screen option.');}};
@@ -999,150 +994,5 @@ document.addEventListener('visibilitychange',syncAwake);window.addEventListener(
 })();
 
 </script>
-<script type="text/plain" id="joi-neural-worker">
-import { KokoroTTS } from 'https://cdn.jsdelivr.net/npm/kokoro-js@1.2.1/dist/kokoro.web.js';
-let model=null;
-self.onmessage=async event=>{
- const {id,type,text,voice,speed}=event.data;
- try{
-  if(type==='init'){
-   model=await KokoroTTS.from_pretrained('onnx-community/Kokoro-82M-v1.0-ONNX',{
-    dtype:'q8',device:'wasm',progress_callback:progress=>{
-     if(progress.status==='progress'&&Number.isFinite(progress.progress))self.postMessage({type:'progress',percent:Math.round(progress.progress),file:progress.file});
-     else if(progress.status==='initiate')self.postMessage({type:'progress',file:progress.file});
-     else if(progress.status==='done')self.postMessage({type:'progress',stage:'initializing'});
-    }
-   });
-   self.postMessage({id,type:'ready'});return;
-  }
-  if(type==='generate'){
-   if(!model)throw new Error('Voice model is not ready.');
-   const audio=await model.generate(text,{voice,speed});
-   const samples=audio.audio;
-   self.postMessage({id,type:'audio',samples,sampleRate:audio.sampling_rate},[samples.buffer]);
-  }
- }catch(error){self.postMessage({id,type:'error',message:error?.message||'Neural voice failed.'});}
-};
-
-</script>
-<script>
-/* Opt-in Kokoro voice. Model inference stays in a worker on this device. */
-(()=>{
-'use strict';
-const el=id=>document.getElementById(id),status=el('neural-status'),engine=el('speech-engine'),voice=el('neural-voice'),enable=el('enable-neural');
-let worker=null,workerURL='',ready=false,loading=null,sequence=0,pending=new Map(),audioContext=null,source=null,session=0,generating=false;
-function abortError(){return new DOMException('Voice stopped.','AbortError');}
-function syncControls(){
-engine.value=prefs.engine;voice.value=prefs.neuralVoice;
-el('voice-choice').disabled=prefs.engine==='neural';el('joi-pitch').disabled=prefs.engine==='neural';
-enable.textContent=ready?'Neural voice ready':loading?'Loading voice…':'Download & enable neural voice';enable.disabled=Boolean(loading);
-el('neural-preview').disabled=Boolean(loading);el('preview').disabled=Boolean(loading);el('watch-demo').disabled=Boolean(loading);
-}
-function update(text){status.textContent=text;}
-function reportError(error){
-const detail=String(error?.message||'Unknown voice error.').slice(0,700);
-update(`Neural voice failed: ${detail} You can retry or select Device voice.`);
-console.error('Joi neural voice:',detail);
-}
-
-function resetWorker(reason=abortError()){
-if(worker)worker.terminate();worker=null;ready=false;loading=null;generating=false;
-if(workerURL)URL.revokeObjectURL(workerURL);workerURL='';
-for(const task of pending.values()){clearTimeout(task.timeout);task.reject(reason);}pending.clear();syncControls();
-}
-function request(type,data={}){
-return new Promise((resolve,reject)=>{
-const id=++sequence,timeout=setTimeout(()=>{resetWorker(new Error('Voice setup or generation took too long. Try again, or use Device voice.'));},type==='init'?300000:120000);
-pending.set(id,{resolve,reject,timeout});
-try{worker.postMessage({id,type,...data});}catch(error){clearTimeout(timeout);pending.delete(id);reject(error);}
-});
-}
-async function prepare(){
-if(ready)return;if(loading)return loading;
-if(!window.Worker||!window.WebAssembly||!(window.AudioContext||window.webkitAudioContext))throw new Error('Neural voice is unavailable in this browser.');
-update('Loading neural voice. First setup downloads about 100–130 MB; keep this page open.');
-workerURL=URL.createObjectURL(new Blob([el('joi-neural-worker').textContent],{type:'text/javascript'}));
-try{worker=new Worker(workerURL,{type:'module'});}catch(error){resetWorker(error);throw error;}
-const instance=worker;
-worker.onmessage=event=>{
-if(worker!==instance)return;
-const result=event.data;
-if(result.type==='progress'){
-if(result.stage==='initializing'){update('Voice file downloaded. Starting the model on this device; this can take a few minutes.');return;}
-const label=result.file?.endsWith('.onnx')?'Voice model':'Voice files';
-update(`${label}${Number.isFinite(result.percent)?` · ${result.percent}%`:''}. First setup can take a few minutes.`);return;
-}
-const task=pending.get(result.id);if(!task)return;pending.delete(result.id);clearTimeout(task.timeout);
-if(result.type==='error')task.reject(new Error(result.message));else task.resolve(result);
-};
-worker.onerror=event=>{if(worker!==instance)return;const error=new Error(event.message||'The voice worker could not start. Check your connection and browser support.');resetWorker(error);reportError(error);};
-loading=request('init').then(()=>{if(worker!==instance)throw abortError();ready=true;loading=null;update('Neural voice ready. Choose a voice and tap Preview voice.');syncControls();}).catch(error=>{if(worker===instance)resetWorker(error);throw error;});
-syncControls();return loading;
-}
-function unlock(){
-const Context=window.AudioContext||window.webkitAudioContext;
-if(!Context)throw new Error('Audio playback is unavailable.');
-if(!audioContext||audioContext.state==='closed')audioContext=new Context();
-return audioContext.resume();
-}
-function play(samples,sampleRate,token){
-return new Promise((resolve,reject)=>{
-if(token!==session){reject(abortError());return;}
-if(!(samples instanceof Float32Array)||!samples.length||!Number.isFinite(sampleRate)||sampleRate<=0){reject(new Error('The voice returned no audio.'));return;}
-const buffer=audioContext.createBuffer(1,samples.length,sampleRate);buffer.copyToChannel(samples,0);
-const node=audioContext.createBufferSource();node.buffer=buffer;node.connect(audioContext.destination);source=node;
-let settled=false;
-const finish=()=>{if(settled)return;settled=true;node.disconnect();if(source===node)source=null;if(token===session)document.dispatchEvent(new Event('joi-neural-ended'));token===session?resolve():reject(abortError());};
-node.onended=finish;
-try{node.start();document.dispatchEvent(new CustomEvent('joi-neural-audio',{detail:{samples,sampleRate}}));}catch(error){node.disconnect();source=null;reject(error);}
-});
-}
-function cancel(){
-session++;
-if(source){const old=source;source=null;try{old.stop();}catch{} }
-if(pending.size||loading){resetWorker();update('Voice stopped. Tap Preview voice to try again.');}
-document.dispatchEvent(new Event('joi-neural-ended'));
-}
-async function speak(text){
-const token=++session;
-// Resume audio during the user's tap, before downloads or inference yield control.
-await unlock();if(token!==session)throw abortError();
-await prepare();if(token!==session)throw abortError();
-const phrases=[];
-// Keep short sentences together so the model can shape a whole thought naturally.
-for(const part of joiSpeechPhrases(text)){
-if(phrases.length&&phrases[phrases.length-1].length+part.length<240)phrases[phrases.length-1]+=' '+part;
-else phrases.push(part);
-}
-const speed=Math.max(.75,Math.min(1.3,prefs.rate*({intimate:1,natural:1.03,playful:1.07}[prefs.style]||1))),selectedVoice=prefs.neuralVoice,chunks=[];
-for(let index=0;index<phrases.length;index++){
-if(token!==session)throw abortError();generating=true;update(`Preparing Joi’s voice${phrases.length>1?` · passage ${index+1} of ${phrases.length}`:''} on this device…`);
-let result;try{result=await request('generate',{text:phrases[index],voice:selectedVoice,speed});}finally{generating=false;}
-if(token!==session)throw abortError();chunks.push(result);
-}
-if(!chunks.length)return;
-// Buffer before playback to avoid long synthesis gaps between spoken sentences.
-const sampleRate=chunks[0].sampleRate,gap=Math.round(sampleRate*.12);
-if(chunks.some(chunk=>chunk.sampleRate!==sampleRate))throw new Error('Voice audio sample rates did not match.');
-const samples=new Float32Array(chunks.reduce((sum,chunk)=>sum+chunk.samples.length,0)+gap*Math.max(0,chunks.length-1));
-let offset=0;for(const chunk of chunks){samples.set(chunk.samples,offset);offset+=chunk.samples.length+gap;}
-update('Neural voice · speaking.');el('status').textContent='Speaking';await play(samples,sampleRate,token);
-update('Neural voice ready.');
-}
-window.joiNeural={prepare,speak,cancel,reportError};
-engine.onchange=()=>{stop();el('settings-panel').querySelector('.dialog-feedback')?.remove();prefs.engine=engine.value;save();syncControls();update(prefs.engine==='neural'?(ready?'Neural voice ready.':'Tap Download & enable neural voice, or Preview voice to load it.'):'Using your device voice.');};
-voice.onchange=()=>{stop();prefs.neuralVoice=voice.value;save();update('Voice selected. Tap Preview voice to compare.');};
-enable.onclick=async()=>{
-try{stop();await unlock();await prepare();prefs.engine='neural';save();syncControls();notify('Neural voice enabled. Tap Preview voice to hear Joi.');}
-catch(error){if(error.name==='AbortError')return;reportError(error);notify('Neural voice could not load. You can keep using Device voice.');}
-};
-el('neural-preview').onclick=()=>{prefs.engine='neural';save();syncControls();say('Hello, Adam. I’m Joi. Take a breath. What shall we make happen today?');};
-el('neural-cancel').onclick=()=>{stop();cancel();update('Voice loading or playback stopped.');};
-syncControls();if(prefs.engine==='neural')update('Neural voice selected. Tap Preview voice to load it when you’re ready.');
-})();
-
-</script>
 </body>
 </html>
-
-
