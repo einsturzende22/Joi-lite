@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-joi-release="0.13">
+<html lang="en" data-joi-release="0.14">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -213,7 +213,7 @@ apply();state();clock();setInterval(clock,30000);loadVoices();if(synth)synth.add
   let storageProblem = false;
   try { const saved = localStorage.getItem(key); if (saved) data = normalize(JSON.parse(saved)); } catch { storageProblem = true; }
   function persist(next) {
-    try { localStorage.setItem(key,JSON.stringify(next)); data = next; render(); return true; }
+    try { localStorage.setItem(key,JSON.stringify(next)); data = next; render(); document.dispatchEvent(new Event('joi-organizer-changed')); return true; }
     catch { notify('Could not save. Check browser storage, then try again. Your change was not saved.'); return false; }
   }
   const draft = () => JSON.parse(JSON.stringify(data));
@@ -264,6 +264,11 @@ apply();state();clock();setInterval(clock,30000);loadVoices();if(synth)synth.add
     el('task-text').value=task?.text||'';el('task-group').value=task?.group||group;el('task-due').value=task?.due||'';
     el('remove-task').hidden=!task;show('task-editor');el('task-text').focus();
   }
+  document.addEventListener('joi-organizer-open',event=>{
+    const {kind,id}=event.detail||{};
+    if(kind==='task'){const task=data.tasks.find(x=>x.id===id);if(task)taskEditor(task);}
+    if(kind==='appointment'){const item=data.appointments.find(x=>x.id===id);if(item)appointmentEditor(item);}
+  });
   el('add-task').onclick=()=>taskEditor();
   el('task-form').onsubmit=event=>{
     event.preventDefault(); const text=el('task-text').value.trim(); if(!text)return;
@@ -739,15 +744,60 @@ apply();state();clock();setInterval(clock,30000);loadVoices();if(synth)synth.add
 #joi-awareness{position:fixed;z-index:8;top:86px;left:50%;transform:translateX(-50%);width:min(390px,calc(100vw - 28px));background:#06111ff0;border:1px solid #7feaff70;border-radius:16px;padding:13px 15px;box-shadow:0 10px 40px #0009;backdrop-filter:blur(12px);font-size:13px}
 #joi-awareness p{margin:6px 0 10px;color:#e4f9ff;font-size:13px}#joi-awareness .aw-actions{display:flex;gap:8px;flex-wrap:wrap}#joi-awareness button{min-height:36px;padding:6px 10px;font-size:12px}#joi-awareness[hidden]{display:none!important}
 </style>
-<div id="joi-awareness" hidden role="status" aria-live="polite"><span class="eyebrow">JOI · AWARENESS</span><p id="joi-awareness-text"></p><div class="aw-actions"><button id="joi-awareness-speak" type="button">Hear Joi</button><button id="joi-awareness-quiet" type="button">Quiet 1 hour</button><button id="joi-awareness-dismiss" type="button" class="quiet">Dismiss</button></div></div>
+<div id="joi-awareness" hidden role="status" aria-live="polite"><span class="eyebrow">JOI · AWARENESS</span><p id="joi-awareness-text"></p><div class="aw-actions"><button id="joi-awareness-action" type="button" hidden>Review</button><button id="joi-awareness-speak" type="button">Hear Joi</button><button id="joi-awareness-quiet" type="button">Quiet 1 hour</button><button id="joi-awareness-dismiss" type="button" class="quiet">Dismiss</button></div></div>
 <script>
-/* Expressive, local-only prompts. No fabricated calendar or AI access. */
+/* Local organizer awareness. No calendar connection or background notifications. */
 (()=>{
 'use strict';
 const panel=document.getElementById('joi-awareness'),message=document.getElementById('joi-awareness-text');
 if(!panel||!message)return;
 const key='joi-awareness-v1',quietKey='joi-awareness-quiet-until';
-let quietUntil=0,lastPrompt=0,queue=[],current='';
+let quietUntil=0,lastPrompt=0,current='',currentItem=null;
+const seenKey='joi-awareness-seen-v2';
+let seen={};
+try{const saved=JSON.parse(localStorage.getItem(seenKey)||'{}');if(saved&&typeof saved==='object'&&!Array.isArray(saved))seen=saved;}catch{}
+const action=document.getElementById('joi-awareness-action');
+function dayStamp(now=new Date()){
+return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+}
+function candidates(now=new Date()){
+let data;try{data=JSON.parse(localStorage.getItem('joi-organizer-v1')||'null');}catch{return [];}
+if(!data||!Array.isArray(data.tasks)||!Array.isArray(data.appointments))return [];
+const day=dayStamp(now),items=[];
+for(const item of data.appointments){
+if(!item||typeof item.id!=='string'||typeof item.text!=='string'||item.date!==day||!/^([01]\d|2[0-3]):[0-5]\d$/.test(item.time))continue;
+const minutes=Math.ceil((new Date(`${item.date}T${item.time}`).getTime()-now.getTime())/60000);
+if(minutes<0||minutes>30)continue;
+items.push({key:`appointment:${item.id}:${item.date}:${item.time}`,kind:'appointment',id:item.id,rank:0,text:`On this tablet: “${item.text}” ${minutes===0?'is starting now':`starts in ${minutes} minute${minutes===1?'':'s'}`}. Shall we review it?`});
+}
+for(const task of data.tasks){
+if(!task||task.done||typeof task.id!=='string'||typeof task.text!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(task.due)||task.due>day)continue;
+items.push({key:`task:${task.id}:${task.due}:${day}`,kind:'task',id:task.id,rank:task.due<day?1:2,due:task.due,text:`On this tablet, “${task.text}” ${task.due<day?'is overdue':'is due today'}. Want to take a look?`});
+}
+return items.sort((a,b)=>a.rank-b.rank||(a.due||'').localeCompare(b.due||''));
+}
+function remember(item){
+seen[item.key]=Date.now();
+seen=Object.fromEntries(Object.entries(seen).filter(([,time])=>Number.isFinite(time)&&Date.now()-time<7*86400000).slice(-200));
+try{localStorage.setItem(seenKey,JSON.stringify(seen));}catch{}
+}
+function checkOrganizer(){
+if(!eligible()||!panel.hidden)return false;
+const item=candidates().find(item=>!Object.hasOwn(seen,item.key));
+if(!item||Date.now()-lastPrompt<5*60000)return false;
+if(show(item.text,item)){remember(item);return true;}return false;
+}
+function dismiss(){panel.hidden=true;currentItem=null;}
+function refresh(){
+if(currentItem&&!candidates().some(item=>item.key===currentItem.key))dismiss();
+checkOrganizer();
+}
+if(action)action.onclick=()=>{
+if(!currentItem)return;
+const item=currentItem;dismiss();
+document.dispatchEvent(new CustomEvent('joi-organizer-open',{detail:{kind:item.kind,id:item.id}}));
+};
+
 try{quietUntil=Number(localStorage.getItem(quietKey))||0;}catch{}
 const greetings={
 morning:["Good morning. Shall we make something interesting happen today?","You're up. I was wondering what we'll accomplish together."],
@@ -762,22 +812,24 @@ const discoveries=[
 "Anything from Walters Plumbing you'd like to get out of your head and organize?",
 "How about taking one small step on the house before calling it a night?"
 ];
-function eligible(){return !document.hidden&&Date.now()>quietUntil&&!document.body.classList.contains('speaking')&&!document.body.classList.contains('listening');}
-function show(value){
-if(!eligible()||panel.hidden===false)return;
-current=value;message.textContent=value;panel.hidden=false;lastPrompt=Date.now();
+function eligible(){return !document.hidden&&Date.now()>quietUntil&&!document.body.classList.contains('speaking')&&!document.body.classList.contains('listening')&&!document.querySelector('dialog[open]');}
+function show(value,item=null){
+if(!eligible()||panel.hidden===false)return false;
+current=value;currentItem=item;message.textContent=value;panel.hidden=false;lastPrompt=Date.now();
+if(action){action.hidden=!item;action.textContent=item?.kind==='appointment'?'Review appointment':'Review task';}
+return true;
 }
 function choose(items){return items[Math.floor(Math.random()*items.length)];}
 function greet(){
 const hour=new Date().getHours(),period=hour<12?'morning':hour<17?'afternoon':'evening';
 const day=new Date().toLocaleDateString('en-CA');
 let previous='';try{previous=localStorage.getItem(key)||'';}catch{}
-if(previous!==day){show(choose(greetings[period]));try{localStorage.setItem(key,day);}catch{}}
+if(previous!==day&&show(choose(greetings[period]))){try{localStorage.setItem(key,day);}catch{}}
 }
-document.getElementById('joi-awareness-dismiss').addEventListener('click',()=>panel.hidden=true);
+document.getElementById('joi-awareness-dismiss').addEventListener('click',dismiss);
 document.getElementById('joi-awareness-quiet').addEventListener('click',()=>{
 quietUntil=Date.now()+3600000;try{localStorage.setItem(quietKey,String(quietUntil));}catch{}
-panel.hidden=true;if('speechSynthesis' in window)speechSynthesis.cancel();
+dismiss();if(typeof stop==='function')stop();
 });
 document.getElementById('joi-awareness-speak').addEventListener('click',()=>{
 if(typeof say==='function')say(current);
@@ -786,9 +838,17 @@ speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(current);u.rate=.9
 document.dispatchEvent(new CustomEvent('joi-device-speech',{detail:{utterance:u}}));speechSynthesis.speak(u);
 }
 });
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)greet();});
-window.addEventListener('pageshow',greet);
-setTimeout(greet,2500);
+function welcome(){refresh();if(panel.hidden)greet();}
+document.addEventListener('visibilitychange',()=>{if(document.hidden){if(typeof stop==='function')stop();}else welcome();});
+document.addEventListener('joi-organizer-changed',refresh);
+window.addEventListener('storage',event=>{
+if(event.key===quietKey){quietUntil=Number(event.newValue)||0;if(Date.now()<quietUntil)dismiss();}
+if(event.key===seenKey){try{seen=JSON.parse(event.newValue||'{}')||{};}catch{seen={};}}
+if(event.key==='joi-organizer-v1')refresh();
+});
+window.addEventListener('pageshow',welcome);
+setTimeout(welcome,2500);
+setInterval(refresh,30000);
 setInterval(()=>{
 if(!eligible()||!panel.hidden||Date.now()-lastPrompt<18*60000)return;
 if(Math.random()<.65)show(choose(discoveries));
@@ -797,4 +857,5 @@ if(Math.random()<.65)show(choose(discoveries));
 </script>
 </body>
 </html>
+
 
