@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-joi-release="0.24">
+<html lang="en" data-joi-release="0.25">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -129,6 +129,9 @@ body.still .fx-shimmer,body.still .fx-response{opacity:0!important}
 .sound-settings{border:1px solid var(--line);border-radius:14px;padding:14px;margin:18px 0}.sound-settings h2{font-size:14px;font-weight:500;margin:0}.sound-settings button{font-size:12px;padding:9px}
 #sound-monitor{position:fixed;z-index:6;bottom:100px;left:50%;transform:translateX(-50%);display:flex;gap:10px;align-items:center;padding:8px 12px;border:1px solid #edbbff88;border-radius:16px;background:#06111ff5;max-width:calc(100vw - 24px);font-size:12px}#sound-monitor meter{width:70px;height:15px}#sound-monitor button{min-height:40px;padding:7px 10px;font-size:12px}#sound-monitor span{white-space:nowrap}
 @media(max-width:1000px){#sound-monitor{bottom:155px}}
+
+.market-buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.market-buttons>*{flex:1;min-width:100px;font-size:12px;min-height:44px;padding:9px}.market-mini-tip{font-size:13px;line-height:1.6;margin:10px 0}
+#markets-panel{width:min(650px,calc(100% - 28px))}.market-tip{border:1px solid var(--line);border-radius:14px;padding:15px;margin-top:16px;background:#081a2a}.market-tip h2{font-size:17px;font-weight:500;margin:9px 0}.market-tip p{margin-bottom:5px}#market-chart-host{height:465px;margin:12px 0;background:#08131e;border:1px solid var(--line);border-radius:12px;overflow:hidden}.tradingview-widget-container{height:100%;width:100%}.tradingview-widget-container__widget{height:calc(100% - 32px);width:100%}.tradingview-widget-copyright{text-align:center;font-size:11px;line-height:32px;color:var(--muted)}.tradingview-widget-copyright a{color:var(--cyan)}#market-notes{margin-bottom:10px}#market-widget-date{font-size:10px}
 </style>
 </head>
 <body>
@@ -182,8 +185,9 @@ body.still .fx-shimmer,body.still .fx-response{opacity:0!important}
 <header><div class="brand"><span class="wordmark">JOI</span><small>YOUR PERSONAL COMPANION</small></div><div class="live" role="status"><span class="dot" aria-hidden="true"></span><span id="status">Standby</span></div><div class="clock"><time id="clock"></time><small id="date"></small></div></header>
 <div class="speech-stop"><small>Joi’s reading voice</small><button id="stop-avatar-speech" type="button">Stop voice</button></div><p class="notice" id="notice" role="status" hidden></p>
 <aside class="sidebar sidebar-left" id="left-widgets" aria-label="Daily organization">
-  <section class="widget"><div class="widget-head"><h2>Your next move</h2><span class="release-stamp">v0.24</span></div><div class="mission-actions"><button type="button" class="primary" id="open-briefing">Brief me</button><button type="button" id="open-capture">Capture tasks</button><button type="button" id="focus-mini">Focus timer</button></div><p class="meta">Your saved organizer · on this device</p></section>
+  <section class="widget"><div class="widget-head"><h2>Your next move</h2><span class="release-stamp">v0.25</span></div><div class="mission-actions"><button type="button" class="primary" id="open-briefing">Brief me</button><button type="button" id="open-capture">Capture tasks</button><button type="button" id="focus-mini">Focus timer</button></div><p class="meta">Your saved organizer · on this device</p></section>
 
+<section class="widget market-widget" aria-labelledby="market-widget-title"><div class="widget-head"><h2 id="market-widget-title">Markets</h2><span id="market-widget-date" class="release-stamp"></span></div><p class="meta">Daily trading checklist · stocks &amp; crypto</p><p id="market-mini-tip" class="market-mini-tip"></p><div class="market-buttons"><button type="button" class="primary" data-open-market="stocks">Stocks</button><button type="button" data-open-market="crypto">Crypto</button></div><p class="inline-help">Charts, research prompts, and notes</p></section>
   <section class="widget"><div class="widget-head"><h2>Today &amp; next</h2><button type="button" id="add-appointment" aria-label="Add an appointment">+</button></div><p class="meta" id="today-heading"></p><ul class="agenda-list" id="agenda-list"></ul><button class="small-link quiet" id="toggle-appointments" type="button">Show past appointments</button><a class="small-link" href="https://calendar.google.com/calendar/" target="_blank" rel="noopener noreferrer">Open Google Calendar ↗</a></section>
   <section class="widget"><div class="widget-head"><h2>Quick tasks <span id="task-count"></span></h2><button type="button" id="add-task" aria-label="Add a task">+</button></div><p class="meta">This tablet · separate from Todoist</p><ul class="task-list" id="task-list"></ul><button class="small-link quiet" id="toggle-completed" type="button">Show completed</button><a class="small-link" href="https://app.todoist.com/" target="_blank" rel="noopener noreferrer">Open Todoist ↗</a></section>
 </aside>
@@ -208,6 +212,14 @@ body.still .fx-shimmer,body.still .fx-response{opacity:0!important}
 <p class="inline-help">Saved on this browser. Starter ideas are a collection to explore, not a live events feed. Check hours and availability before going.</p>
 </section><p class="menu-footer">Apps open separately. Your organizer stays on this tablet.</p></section>
 </aside>
+<dialog id="markets-panel" aria-labelledby="markets-title"><div class="panel-head"><div><div class="eyebrow">Your daily market desk</div><h1 id="markets-title">Stocks &amp; crypto</h1></div><button class="quiet close" data-close aria-label="Close markets">×</button></div>
+<p id="market-date" class="inline-help"></p><div class="segmented" role="group" aria-label="Market type"><button type="button" id="market-stocks" aria-pressed="true">Stocks</button><button type="button" id="market-crypto" aria-pressed="false">Crypto</button></div>
+<section class="market-tip"><div class="eyebrow">Today’s learning tip</div><h2 id="market-tip-title"></h2><p id="market-tip-body"></p><a id="market-tip-source" class="small-link" target="_blank" rel="noopener noreferrer">Read the source ↗</a></section>
+<p class="inline-help">Tips rotate daily from a saved educational checklist. They are not live market analysis or buy/sell signals.</p>
+<label for="market-symbol">Chart to watch</label><select id="market-symbol"></select><div class="market-buttons"><button type="button" class="primary" id="market-load-chart">Load chart</button><a class="action quiet" id="market-open-chart" target="_blank" rel="noopener noreferrer">Open chart ↗</a></div><p class="inline-help" id="market-chart-status" role="status">Load a chart when you want it. Quote timing and availability depend on TradingView’s data feed.</p><div id="market-chart-host" hidden></div>
+<section class="brief-section"><h2>Research today’s opportunities</h2><p class="inline-help">Prepare a request with today’s date and your selected market. Copy it into your ChatGPT pop-up for fresh, sourced research.</p><button type="button" class="primary" id="market-research">Prepare today’s brief</button></section>
+<section class="brief-section"><h2>Your saved brief &amp; notes</h2><label for="market-notes">Paste research or record your plan</label><textarea id="market-notes" maxlength="6000" placeholder="What is worth watching? What would confirm or invalidate the idea?"></textarea><button type="button" id="market-save-notes" class="primary">Save notes</button><p id="market-notes-status" class="inline-help" role="status"></p><button type="button" id="market-download" class="small-link quiet">Download market notes</button></section>
+<p class="hint">Research only. Joi does not connect to a brokerage or place trades. Day trading and crypto can involve substantial losses.</p></dialog>
 <dialog id="discover-editor" aria-labelledby="discover-title"><div class="panel-head"><div><div class="eyebrow">Keep something interesting</div><h1 id="discover-title">Add a discovery</h1></div><button class="quiet close" data-close aria-label="Close discovery editor">×</button></div>
 <form class="widget-form" id="discover-form"><label for="discover-name">Title or place</label><input id="discover-name" maxlength="160" required autocomplete="off" placeholder="A film, album, book, or place…"><label for="discover-kind">Category</label><select id="discover-kind"><option value="film">Film</option><option value="music">Music</option><option value="book">Book</option><option value="outing">Outing</option></select><label for="discover-note">Why it interests you</label><textarea id="discover-note" maxlength="1200" placeholder="A recommendation, a mood, or a reason to go…"></textarea><label for="discover-url">Link (optional)</label><input id="discover-url" type="url" maxlength="2048" placeholder="https://…"><p class="inline-help" id="discover-form-status" role="status"></p><button class="primary" type="submit">Save discovery</button></form></dialog>
 <dialog id="spotify-panel" aria-labelledby="spotify-title"><div class="panel-head"><div><div class="eyebrow">Set the atmosphere</div><h1 id="spotify-title">Choose your music</h1></div><button class="quiet close" data-close aria-label="Close Spotify settings">×</button></div>
@@ -1331,6 +1343,74 @@ const payload=storageProblem?localStorage.getItem(key):JSON.stringify(items,null
 const blob=new Blob([payload||'[]'],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='joi-discover-backup.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 };
 draw();if(storageProblem)status('Your saved collection could not be read. It has been preserved.');
+})();
+</script>
+
+<script>
+/* Daily learning tips and on-demand charts. No account connection or automatic trades. */
+(()=>{
+'use strict';
+const el=id=>document.getElementById(id),panel=el('markets-panel'),key='joi-markets-v1',zone='America/Detroit';
+const sources={stocks:'https://www.investor.gov/introduction-investing/getting-started/investing-your-own/online-investing',crypto:'https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-alerts/crypto-asset-securities'};
+const tips={
+stocks:[
+['Write the trade before placing it','State why you would enter, what would invalidate the idea, and how much you can lose. A fast order still needs a researched decision.'],
+['Understand the order type','A limit order sets a price boundary but may not fill. Check the bid, ask, and order status before submitting another order.'],
+['Verify the catalyst','Read the company’s announcement or filing before acting on a headline. Confirm that the news is current and relevant to the security you are watching.']
+],
+crypto:[
+['Define the downside first','Treat speculative crypto as money you could lose entirely. Write down your exit conditions before focusing on possible upside.'],
+['Inspect liquidity and the venue','Check the spread, available trading depth, and platform protections. A displayed price does not guarantee you can exit a position at that price.'],
+['Challenge the excitement','High volatility can create large losses as well as gains. Verify claims independently and avoid treating social-media enthusiasm as evidence.']
+]};
+const symbols={stocks:[['AMEX:SPY','SPY · S&P 500 ETF'],['NASDAQ:QQQ','QQQ · Nasdaq-100 ETF'],['NASDAQ:AAPL','AAPL · Apple'],['NASDAQ:MSFT','MSFT · Microsoft'],['NASDAQ:NVDA','NVDA · NVIDIA']],crypto:[['COINBASE:BTCUSD','BTC / USD · Coinbase'],['COINBASE:ETHUSD','ETH / USD · Coinbase'],['COINBASE:SOLUSD','SOL / USD · Coinbase']]};
+let market='stocks',selected={stocks:'AMEX:SPY',crypto:'COINBASE:BTCUSD'},notes={stocks:'',crypto:''},savedAt={stocks:'',crypto:''},storageProblem=false,lastDay='';
+try{const raw=localStorage.getItem(key);if(raw!==null){const saved=JSON.parse(raw);if(!saved||typeof saved!=='object')throw Error('Invalid notes');for(const kind of ['stocks','crypto']){if(saved.notes?.[kind]!==undefined){if(typeof saved.notes[kind]!=='string'||saved.notes[kind].length>6000)throw Error('Invalid notes');notes[kind]=saved.notes[kind];}if(symbols[kind].some(entry=>entry[0]===saved.selected?.[kind]))selected[kind]=saved.selected[kind];if(typeof saved.savedAt?.[kind]==='string')savedAt[kind]=saved.savedAt[kind];}}}catch{storageProblem=true;}
+function dayParts(date=new Date()){return Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:zone,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(date).filter(part=>part.type!=='literal').map(part=>[part.type,part.value]));}
+function dayKey(date=new Date()){const p=dayParts(date);return p.year+'-'+p.month+'-'+p.day;}
+function dayIndex(date=new Date()){const p=dayParts(date);return Math.floor(Date.UTC(Number(p.year),Number(p.month)-1,Number(p.day))/86400000);}
+function persist(){if(storageProblem){el('market-notes-status').textContent='Saved notes could not be read. Existing data was preserved; download a backup before changing it.';return false;}try{localStorage.setItem(key,JSON.stringify({selected,notes,savedAt}));return true;}catch{el('market-notes-status').textContent='Could not save in this browser. Download your notes to keep a copy.';return false;}}
+function noteStatus(){el('market-notes-status').textContent=storageProblem?'Saved notes could not be read; existing data has been preserved.':savedAt[market]?'Last saved '+new Date(savedAt[market]).toLocaleString([],{timeZone:zone})+' · Eastern time':'Notes stay in this browser. Download a copy to keep a backup.';}
+function unload(){el('market-chart-host').replaceChildren();el('market-chart-host').hidden=true;el('market-chart-status').textContent='Load a chart when you want it. Quote timing and availability depend on TradingView’s data feed.';}
+function chartLink(){el('market-open-chart').href='https://www.tradingview.com/chart/?symbol='+encodeURIComponent(selected[market]);}
+function daily(){
+const now=new Date(),label=new Intl.DateTimeFormat('en-US',{timeZone:zone,weekday:'long',month:'short',day:'numeric',year:'numeric'}).format(now);
+el('market-date').textContent=label+' · Eastern time';el('market-widget-date').textContent=new Intl.DateTimeFormat('en-US',{timeZone:zone,month:'short',day:'numeric'}).format(now);
+const pick=tips[market][dayIndex(now)%tips[market].length];el('market-tip-title').textContent=pick[0];el('market-tip-body').textContent=pick[1];el('market-tip-source').href=sources[market];
+el('market-mini-tip').textContent='Stocks: '+tips.stocks[dayIndex(now)%3][0]+'. Crypto: '+tips.crypto[dayIndex(now)%3][0]+'.';lastDay=dayKey(now);
+}
+function switchMarket(next){
+if(panel.open&&next!==market&&el('market-notes').value!==notes[market]){const previous=notes[market],previousTime=savedAt[market];notes[market]=el('market-notes').value;savedAt[market]=new Date().toISOString();if(!persist()){notes[market]=previous;savedAt[market]=previousTime;return;}}
+market=next;el('market-stocks').setAttribute('aria-pressed',String(market==='stocks'));el('market-crypto').setAttribute('aria-pressed',String(market==='crypto'));el('market-symbol').replaceChildren(...symbols[market].map(([value,label])=>new Option(label,value)));el('market-symbol').value=selected[market];el('market-notes').value=notes[market];noteStatus();chartLink();unload();daily();
+}
+document.querySelectorAll('[data-open-market]').forEach(button=>button.onclick=()=>{switchMarket(button.dataset.openMarket);panel.showModal();});
+el('market-stocks').onclick=()=>switchMarket('stocks');el('market-crypto').onclick=()=>switchMarket('crypto');
+el('market-symbol').onchange=()=>{selected[market]=el('market-symbol').value;persist();chartLink();unload();};
+el('market-load-chart').onclick=()=>{
+unload();const host=el('market-chart-host');host.hidden=false;
+const container=document.createElement('div');container.className='tradingview-widget-container';
+const chart=document.createElement('div');chart.className='tradingview-widget-container__widget';
+const credit=document.createElement('div');credit.className='tradingview-widget-copyright';const link=document.createElement('a');link.href=el('market-open-chart').href;link.target='_blank';link.rel='noopener nofollow';link.textContent=selected[market]+' chart';credit.append(link,document.createTextNode(' by TradingView'));
+const script=document.createElement('script');script.type='text/javascript';script.src='https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';script.async=true;
+script.textContent=JSON.stringify({autosize:true,symbol:selected[market],interval:'60',timezone:'America/New_York',theme:'dark',style:'1',locale:'en',allow_symbol_change:false,hide_side_toolbar:true,hide_top_toolbar:false,hide_volume:false,calendar:false,details:false,save_image:false,withdateranges:true});
+script.onerror=()=>{if(container.isConnected)el('market-chart-status').textContent='Chart could not load. Use Open chart to view it on TradingView.';};
+container.append(chart,credit,script);host.append(container);el('market-chart-status').textContent='TradingView chart requested. Check its displayed timestamp and any delayed-data notice before relying on a quote.';
+};
+el('market-save-notes').onclick=()=>{const previous=notes[market],previousTime=savedAt[market];notes[market]=el('market-notes').value;savedAt[market]=new Date().toISOString();if(persist())noteStatus();else{notes[market]=previous;savedAt[market]=previousTime;}};
+panel.addEventListener('close',unload);
+el('market-research').onclick=()=>{
+const today=dayKey(),watch=symbols[market].map(entry=>entry[1]).join(', ');
+el('prompt-title').textContent='Today’s '+(market==='stocks'?'stock':'crypto')+' brief';el('prompt-description').textContent='Copy this request into your ChatGPT pop-up. Joi does not fetch or generate this research automatically.';
+el('prompt-text').value='Research '+market+' for '+today+' in America/Detroit time. I am watching '+watch+' over an hours-to-one-day horizon. Browse current primary sources and show the date, time, timezone, and source of each quote. If markets are closed, label last-session prices. Give up to three research candidates with verified catalysts, liquidity/spread considerations, what would confirm or invalidate each setup, and reasons to skip trading. Distinguish verified facts from scenarios. Do not promise profit, invent live prices, or recommend leverage. If timely data is unavailable, say so. Keep it concise.';
+el('prompt-status').textContent='';panel.close();el('prompt-panel').showModal();
+};
+el('market-download').onclick=()=>{
+const payload={exportedAt:new Date().toISOString(),notes:{...notes,[market]:el('market-notes').value},savedAt,selected};
+const blob=new Blob([storageProblem?localStorage.getItem(key)||'{}':JSON.stringify(payload,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='joi-market-notes.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+};
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)daily();});
+setInterval(()=>{if(!document.hidden&&dayKey()!==lastDay)daily();},60000);
+switchMarket('stocks');
 })();
 </script>
 </body>
