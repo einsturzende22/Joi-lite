@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-joi-release="0.32">
+<html lang="en" data-joi-release="0.33">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -190,7 +190,7 @@ body.still .fx-shimmer,body.still .fx-response{opacity:0!important}
 <header><div class="brand"><span class="wordmark">JOI</span><small>YOUR PERSONAL COMPANION</small></div><div class="live" role="status"><span class="dot" aria-hidden="true"></span><span id="status">Standby</span></div><div class="clock"><time id="clock"></time><small id="date"></small></div></header>
 <div class="speech-stop"><small>Joi’s reading voice</small><button id="stop-avatar-speech" type="button">Stop voice</button></div><p class="notice" id="notice" role="status" hidden></p>
 <aside class="sidebar sidebar-left" id="left-widgets" aria-label="Daily organization">
-  <section class="widget"><div class="widget-head"><h2>Your next move</h2><span class="release-stamp">v0.32</span></div><div class="mission-actions"><button type="button" class="primary" id="open-briefing">Brief me</button><button type="button" id="open-capture">Capture tasks</button><button type="button" id="focus-mini">Focus timer</button></div><p class="meta">Your saved organizer · on this device</p></section>
+  <section class="widget"><div class="widget-head"><h2>Your next move</h2><span class="release-stamp">v0.33</span></div><div class="mission-actions"><button type="button" class="primary" id="open-briefing">Brief me</button><button type="button" id="open-capture">Capture tasks</button><button type="button" id="focus-mini">Focus timer</button></div><p class="meta">Your saved organizer · on this device</p></section>
 
 <section class="widget market-widget" aria-labelledby="market-widget-title"><div class="widget-head"><h2 id="market-widget-title">Markets</h2><span id="market-widget-date" class="release-stamp"></span></div><p class="meta">Daily trading checklist · stocks &amp; crypto</p><p id="market-mini-tip" class="market-mini-tip"></p><div class="market-buttons"><button type="button" class="primary" data-open-market="stocks">Stocks</button><button type="button" data-open-market="crypto">Crypto</button></div><p class="inline-help">Charts, research prompts, and notes</p></section>
   <section class="widget"><div class="widget-head"><h2>Today &amp; next</h2><button type="button" id="add-appointment" aria-label="Add an appointment">+</button></div><p class="meta" id="today-heading"></p><ul class="agenda-list" id="agenda-list"></ul><button class="small-link quiet" id="toggle-appointments" type="button">Show past appointments</button><a class="small-link" href="https://calendar.google.com/calendar/" target="_blank" rel="noopener noreferrer">Open Google Calendar ↗</a></section>
@@ -523,6 +523,45 @@ apply();state();clock();setInterval(clock,30000);loadVoices();if(synth)synth.add
       if(persist(next,true)){el('workspace-note').value=data.notes[activeWorkspace];notify('Backup merged with this tablet’s organizer.');}
     }catch{notify('Could not import this file. Use a Joi organizer backup within the storage limits.');}finally{event.target.value='';}
   };
+
+  // Quick panel shares the organizer's validation, persistence and change events.
+  window.JoiOrganizer = Object.freeze({
+    snapshot: () => draft(),
+    addTasks({text, group, due = '', priority = false}) {
+      if(typeof text !== 'string' || !Object.hasOwn(groups,group) || (due && !validDate(due))) return {ok:false,message:'Check the workspace and due date.'};
+      const lines=text.split(/\r?\n/).map(line=>line.trim().replace(/^[-*•]\s+/, '')).filter(Boolean);
+      if(!lines.length || lines.length>50 || lines.some(line=>line.length>180)) return {ok:false,message:'Use 1–50 lines, with no more than 180 characters per task.'};
+      if(data.tasks.length+lines.length>1000) return {ok:false,message:'Task storage is full. Remove older tasks first.'};
+      const next=draft();
+      for(const line of lines) next.tasks.push({id:uid(),text:line,group,due,done:false,priority:priority===true});
+      return persist(next) ? {ok:true,message:'Saved '+lines.length+' task'+(lines.length===1?'':'s')+' on this tablet.'} : {ok:false,message:'Not saved. Your text is still here; check browser storage and try again.'};
+    },
+    appendNote({text,group}) {
+      if(typeof text!=='string' || !text.trim() || !Object.hasOwn(groups,group)) return {ok:false,message:'Enter a note and choose a workspace.'};
+      if(el('workspace-note').value!==data.notes[activeWorkspace] && !saveNote()) return {ok:false,message:'Could not save your open workspace notes. Your capture is still here.'};
+      const next=draft(),previous=next.notes[group];
+      const entry=text.trim();
+      const combined=previous ? previous+'\n\n'+entry : entry;
+      if(combined.length>12000) return {ok:false,message:'These workspace notes are full. Shorten them before adding this note.'};
+      next.notes[group]=combined;
+      if(!persist(next)) return {ok:false,message:'Not saved. Your note is still here; check browser storage and try again.'};
+      if(group===activeWorkspace)el('workspace-note').value=combined;
+      return {ok:true,message:'Note appended to '+groups[group]+' on this tablet.'};
+    },
+    complete(id, done) {
+      const next=draft(),task=next.tasks.find(task=>task.id===id);
+      if(!task)return false;
+      task.done=done===true;return persist(next);
+    },
+    priority(id, priority) {
+      const next=draft(),task=next.tasks.find(task=>task.id===id);
+      if(!task)return false;
+      task.priority=priority===true;return persist(next);
+    },
+    openTask(id) { const task=data.tasks.find(task=>task.id===id);if(task)taskEditor(task); },
+    openWorkspace(group) { if(Object.hasOwn(groups,group))workspace(group); }
+  });
+
   el('workspace-note').value=data.notes[activeWorkspace];
   widgetClock();render();weather();let lastDay=today();
   setInterval(()=>{widgetClock();if(lastDay!==today()){lastDay=today();render();}},30000);
@@ -1571,6 +1610,7 @@ switchMarket('stocks');
 
 </script>
 <script src="./tablet-mode.js?v=0.32"></script>
+<script src="./quick-panel.js?v=0.33"></script>
 </body>
 </html>
 
