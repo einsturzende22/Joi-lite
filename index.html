@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-joi-release="0.31">
+<html lang="en" data-joi-release="0.32">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -190,7 +190,7 @@ body.still .fx-shimmer,body.still .fx-response{opacity:0!important}
 <header><div class="brand"><span class="wordmark">JOI</span><small>YOUR PERSONAL COMPANION</small></div><div class="live" role="status"><span class="dot" aria-hidden="true"></span><span id="status">Standby</span></div><div class="clock"><time id="clock"></time><small id="date"></small></div></header>
 <div class="speech-stop"><small>Joi’s reading voice</small><button id="stop-avatar-speech" type="button">Stop voice</button></div><p class="notice" id="notice" role="status" hidden></p>
 <aside class="sidebar sidebar-left" id="left-widgets" aria-label="Daily organization">
-  <section class="widget"><div class="widget-head"><h2>Your next move</h2><span class="release-stamp">v0.31</span></div><div class="mission-actions"><button type="button" class="primary" id="open-briefing">Brief me</button><button type="button" id="open-capture">Capture tasks</button><button type="button" id="focus-mini">Focus timer</button></div><p class="meta">Your saved organizer · on this device</p></section>
+  <section class="widget"><div class="widget-head"><h2>Your next move</h2><span class="release-stamp">v0.32</span></div><div class="mission-actions"><button type="button" class="primary" id="open-briefing">Brief me</button><button type="button" id="open-capture">Capture tasks</button><button type="button" id="focus-mini">Focus timer</button></div><p class="meta">Your saved organizer · on this device</p></section>
 
 <section class="widget market-widget" aria-labelledby="market-widget-title"><div class="widget-head"><h2 id="market-widget-title">Markets</h2><span id="market-widget-date" class="release-stamp"></span></div><p class="meta">Daily trading checklist · stocks &amp; crypto</p><p id="market-mini-tip" class="market-mini-tip"></p><div class="market-buttons"><button type="button" class="primary" data-open-market="stocks">Stocks</button><button type="button" data-open-market="crypto">Crypto</button></div><p class="inline-help">Charts, research prompts, and notes</p></section>
   <section class="widget"><div class="widget-head"><h2>Today &amp; next</h2><button type="button" id="add-appointment" aria-label="Add an appointment">+</button></div><p class="meta" id="today-heading"></p><ul class="agenda-list" id="agenda-list"></ul><button class="small-link quiet" id="toggle-appointments" type="button">Show past appointments</button><a class="small-link" href="https://calendar.google.com/calendar/" target="_blank" rel="noopener noreferrer">Open Google Calendar ↗</a></section>
@@ -1233,24 +1233,7 @@ if(event.key!==key)return;
 try{const value=JSON.parse(event.newValue||'null');if(value&&durations.includes(value.duration)&&Number.isFinite(value.remaining)&&value.remaining>=0&&value.remaining<=45*60&&Number.isFinite(value.end)){timer={duration:value.duration,remaining:value.remaining,end:value.end,running:value.running===true,finished:value.finished===true};draw();}}catch{}
 });
 setInterval(draw,1000);document.addEventListener('visibilitychange',draw);draw();
-const awake=el('keep-awake'),status=el('awake-status');
-let wanted=false,lock=null,pending=false;
-try{wanted=localStorage.getItem('joi-keep-awake-v1')==='on';}catch{}
-awake.checked=wanted;
-if(!navigator.wakeLock){awake.disabled=true;awake.checked=false;status.textContent='Keep-awake is unavailable in this browser.';return;}
-async function syncAwake(){
-if(!wanted||document.hidden){if(lock){const old=lock;lock=null;try{await old.release();}catch{}}status.textContent=wanted?'Paused while Joi is in the background.':'Off. Screen behavior follows your device settings.';return;}
-if(lock||pending)return;pending=true;status.textContent='Requesting screen wake lock…';
-try{
-const next=await navigator.wakeLock.request('screen');
-if(!wanted||document.hidden){await next.release();return;}
-lock=next;status.textContent='Active while Joi is visible. Your screen will stay awake.';
-next.addEventListener('release',()=>{if(lock===next){lock=null;status.textContent=wanted?'Released by your device. Toggle off and on to retry.':'Off. Screen behavior follows your device settings.';}});
-}catch{status.textContent='Your device did not allow keep-awake. Try again, or adjust screen timeout in device settings.';}
-finally{pending=false;}
-}
-awake.onchange=()=>{wanted=awake.checked;try{localStorage.setItem('joi-keep-awake-v1',wanted?'on':'off');}catch{}syncAwake();};
-document.addEventListener('visibilitychange',syncAwake);window.addEventListener('pagehide',()=>{if(lock)lock.release().catch(()=>{});});syncAwake();
+// Tablet display lifecycle is managed in tablet-mode.js.
 })();
 
 </script>
@@ -1587,6 +1570,7 @@ switchMarket('stocks');
 })();
 
 </script>
+<script src="./tablet-mode.js?v=0.32"></script>
 </body>
 </html>
 
